@@ -6,3 +6,4 @@ third_party/*
 models/*
 *.pyc
 mtlabs
+data

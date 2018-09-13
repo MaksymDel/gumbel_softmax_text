@@ -18,7 +18,7 @@ from allennlp.models.model import Model
 from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits, weighted_sum
 
 
-@Model.register("seq2seq")
+@Model.register("seq2seq_regressional")
 class Seq2Seq(Model):
     """
     This ``Seq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then

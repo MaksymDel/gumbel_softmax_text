@@ -20,7 +20,7 @@
         "type": "lstm",
         "input_size": 300,
         "hidden_size": 150,
-        "num_layers": 2,
+        "num_layers": 1,
         "bidirectional": true
       },
       "max_decoding_steps": 100,

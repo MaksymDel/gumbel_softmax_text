@@ -1,2 +1,3 @@
 from my_library.dataset_readers.semantic_scholar_papers import SemanticScholarDatasetReader
 from my_library.dataset_readers.mt_dataset_reader import MtDatasetReader
+from my_library.dataset_readers.simple_seq2seq_dataset_reader import SimpleSeq2SeqDatasetReader

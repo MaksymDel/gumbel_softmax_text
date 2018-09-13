@@ -4,8 +4,8 @@
       "source_token_indexers":{"tokens": {"namespace": "source_subwords"}},
       "target_token_indexers":{"tokens": {"namespace": "target_subwords"}}
     },
-    "train_data_path": "data/",
-    "validation_data_path": "data/",
+    "train_data_path": "data/train.both.tsv",
+    "validation_data_path": "data/dev.both.tsv",
     "model": {
       "type": "seq2seq",
       "source_embedder": {
@@ -29,7 +29,7 @@
     },
     "iterator": {
       "type": "basic",
-      "batch_size": 16
+      "batch_size": 128
     },
     "trainer": {
       "num_epochs": 500,

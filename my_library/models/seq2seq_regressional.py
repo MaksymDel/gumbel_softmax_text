@@ -70,6 +70,7 @@ class Seq2Seq(Model):
                  max_decoding_steps: int,
                  target_namespace: str = "tokens",
                  target_embedding_dim: int = None,
+                 groundtruth_embedder: TextFieldEmbedder,
                  attention_function: SimilarityFunction = None,
                  scheduled_sampling_ratio: float = 0.0) -> None:
         super(Seq2Seq, self).__init__(vocab)
@@ -99,8 +100,13 @@ class Seq2Seq(Model):
             self._decoder_input_dim = target_embedding_dim
         # TODO (pradeep): Do not hardcode decoder cell type.
         self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
-        self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
-        self._groundtruth_embeddings = Embedding()
+
+        # TODO: refactor regression part
+        self._groundtruth_embedder = groundtruth_embedder
+
+        self._output_vector_regressor = Linear(self._decoder_output_dim, self._groundtruth_embedder.get_output_dim())
+        #self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
+
 
     @overrides
     def forward(self,  # type: ignore
@@ -152,27 +158,33 @@ class Seq2Seq(Model):
                                                             encoder_outputs, source_mask)
             decoder_hidden, decoder_context = self._decoder_cell(decoder_input,
                                                                  (decoder_hidden, decoder_context))
+
             # (batch_size, num_classes)
-            output_projections = self._output_projection_layer(decoder_hidden)
+            # output_projections = self._output_projection_layer(decoder_hidden)
+
+            # (batch_size, num_classes)
+            output_vector_hat = self._output_vector_regressor(decoder_hidden)
+
+
             # list of (batch_size, 1, num_classes)
-            step_logits.append(output_projections.unsqueeze(1))
-            class_probabilities = F.softmax(output_projections, dim=-1)
-            _, predicted_classes = torch.max(class_probabilities, 1)
-            step_probabilities.append(class_probabilities.unsqueeze(1))
-            last_predictions = predicted_classes
+            #step_logits.append(output_projections.unsqueeze(1))
+            #class_probabilities = F.softmax(output_projections, dim=-1)
+            #_, predicted_classes = torch.max(class_probabilities, 1)
+            #step_probabilities.append(class_probabilities.unsqueeze(1))
+            #last_predictions = predicted_classes
             # (batch_size, 1)
-            step_predictions.append(last_predictions.unsqueeze(1))
+            #step_predictions.append(last_predictions.unsqueeze(1))
+
+            # (batch_size, 1)
+            step_predictions.append(output_vector_hat.unsqueeze(1))
+
         # step_logits is a list containing tensors of shape (batch_size, 1, num_classes)
-        # This is (batch_size, num_decoding_steps, num_classes)
-        logits = torch.cat(step_logits, 1)
-        class_probabilities = torch.cat(step_probabilities, 1)
+        # This is (batch_size, num_decoding_steps, gorundtruth_emb_dim)
         all_predictions = torch.cat(step_predictions, 1)
-        output_dict = {"logits": logits,
-                       "class_probabilities": class_probabilities,
-                       "predictions": all_predictions}
+        output_dict = {"predicted_vectors": all_predictions}
         if tgt_tokens:
             target_mask = get_text_field_mask(tgt_tokens)
-            loss = self._get_loss(logits, targets, target_mask)
+            loss = self._get_loss(all_predictions, targets, target_mask)
             output_dict["loss"] = loss
             # TODO: Define metrics
         return output_dict
@@ -220,7 +232,7 @@ class Seq2Seq(Model):
             return embedded_input
 
     @staticmethod
-    def _get_loss(logits: torch.LongTensor,
+    def _get_loss(predicted_vectors: torch.LongTensor,
                   targets: torch.LongTensor,
                   target_mask: torch.LongTensor) -> torch.LongTensor:
         """
@@ -246,7 +258,7 @@ class Seq2Seq(Model):
         """
         relevant_targets = targets[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
         relevant_mask = target_mask[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
-        loss = sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask)
+        loss = sequence_cross_entropy_with_logits(predicted_vectors, relevant_targets, relevant_mask)
         return loss
 
     @overrides

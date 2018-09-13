@@ -28,6 +28,7 @@ class Seq2SeqPredictor(Predictor):
 
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
+        print(json_dict)
         src = json_dict['src']
         instance = self._dataset_reader.text_to_instance(source_string=src)
 

@@ -1,8 +1,8 @@
 {
     "dataset_reader":{
       "type":"simple_seq2seq",
-      "source_token_indexers":{"tokens": {"namespace": "source_subwords", "lowercase_tokens": true}},
-      "target_token_indexers":{"tokens": {"namespace": "target_subwords", "lowercase_tokens": true}}
+      "source_token_indexers":{"tokens": {"namespace": "source_subwords"}},
+      "target_token_indexers":{"tokens": {"namespace": "target_subwords"}}
     },
     "train_data_path": "data/train.bpe.both",
     "validation_data_path": "data/dev.both.bpe.tsv",

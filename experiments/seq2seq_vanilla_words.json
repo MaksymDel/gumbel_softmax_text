@@ -1,17 +1,20 @@
 {
+    "vocabulary": {
+      "max_vocab_size": 50000
+    },
     "dataset_reader":{
       "type":"simple_seq2seq",
-      "source_token_indexers":{"tokens": {"namespace": "source_subwords", "lowercase_tokens": true}},
-      "target_token_indexers":{"tokens": {"namespace": "target_subwords", "lowercase_tokens": true}}
+      "source_token_indexers":{"tokens": {"namespace": "source_words", "lowercase_tokens": true}},
+      "target_token_indexers":{"tokens": {"namespace": "target_words", "lowercase_tokens": true}}
     },
-    "train_data_path": "data/train.bpe.both",
-    "validation_data_path": "data/dev.both.bpe.tsv",
+    "train_data_path": "data/cleaned.train.both",
+    "validation_data_path": "data/dev.both.tsv",
     "model": {
       "type": "seq2seq",
       "source_embedder": {
         "tokens": {
           "type": "embedding",
-          "vocab_namespace": "source_subwords",
+          "vocab_namespace": "source_words",
           "embedding_dim": 300,
           "trainable": true
         }
@@ -24,7 +27,7 @@
         "bidirectional": true
       },
       "max_decoding_steps": 100,
-      "target_namespace": "target_subwords",
+      "target_namespace": "target_words",
       "attention_function": {"type": "dot_product"}
     },
     "iterator": {

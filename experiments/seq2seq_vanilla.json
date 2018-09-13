@@ -29,7 +29,7 @@
     },
     "iterator": {
       "type": "basic",
-      "batch_size": 128
+      "batch_size": 64
     },
     "trainer": {
       "num_epochs": 500,

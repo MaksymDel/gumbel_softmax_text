@@ -18,8 +18,8 @@ from allennlp.models.model import Model
 from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits, weighted_sum, get_final_encoder_states
 
 
-@Model.register("regr_seq2seq")
-class RegrSeq2Seq(Model):
+@Model.register("pretr_seq2seq")
+class PretrSeq2Seq(Model):
     """
     This ``Seq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then
     uses the encoded representations to decode another sequence.  You can use this as the basis for
@@ -71,11 +71,12 @@ class RegrSeq2Seq(Model):
                  target_namespace: str = "tokens",
                  attention_function: SimilarityFunction = None,
                  scheduled_sampling_ratio: float = 0.0,
+                 label_smoothing: float = None,
                  target_embedding_dim: int = None,
-                 target_tokens_embedder: TokenEmbedder = None,
-                 loss_type: str = None
+                 target_tokens_embedder: TokenEmbedder = None
                  ) -> None:
-        super(RegrSeq2Seq, self).__init__(vocab)
+        super(PretrSeq2Seq, self).__init__(vocab)
+        self._label_smoothing = label_smoothing
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps
@@ -100,8 +101,7 @@ class RegrSeq2Seq(Model):
         if target_tokens_embedder:
             target_embedding_dim = target_tokens_embedder.get_output_dim()
             self._target_embedder = target_tokens_embedder 
-        
-        self._target_embedding_dim = target_embedding_dim
+            
             
         if self._attention_function:
             self._decoder_attention = LegacyAttention(self._attention_function)
@@ -112,10 +112,7 @@ class RegrSeq2Seq(Model):
             self._decoder_input_dim = target_embedding_dim
         # TODO (pradeep): Do not hardcode decoder cell type.
         self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
-        # layer that predicts embedding vector for target
-        self._output_projection_layer = Linear(self._decoder_output_dim, self._target_embedding_dim)
-        
-        self._loss_type = loss_type or "mse"
+        self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
 
     @overrides
     def forward(self,  # type: ignore
@@ -149,55 +146,51 @@ class RegrSeq2Seq(Model):
             num_decoding_steps = self._max_decoding_steps
         decoder_hidden = final_encoder_output
         decoder_context = encoder_outputs.new_zeros(batch_size, self._decoder_output_dim)
-        
-        last_predicted_vector = None
-        #step_logits = []
-        step_predicted_vecs = []
-        
+        last_predictions = None
+        step_logits = []
+        step_probabilities = []
+        step_predictions = []
         for timestep in range(num_decoding_steps):
             if self.training and torch.rand(1).item() >= self._scheduled_sampling_ratio:
-                embedded_input_tgt = self._target_embedder(self.targets[:, timestep])
+                input_choices = targets[:, timestep]
             else:
                 if timestep == 0:
                     # For the first timestep, when we do not have targets, we input start symbols.
                     # (batch_size,)
-                    embedded_input_tgt = self._target_embedder(source_mask.new_full((batch_size,), fill_value=self._start_index))
+                    input_choices = source_mask.new_full((batch_size,), fill_value=self._start_index)
                 else:
-                    embedded_input_tgt = last_predicted_vector
-            decoder_input = self._prepare_decode_step_input(embedded_input_tgt, decoder_hidden,
+                    input_choices = last_predictions
+            decoder_input = self._prepare_decode_step_input(input_choices, decoder_hidden,
                                                             encoder_outputs, source_mask)
             decoder_hidden, decoder_context = self._decoder_cell(decoder_input,
                                                                  (decoder_hidden, decoder_context))
             # (batch_size, num_classes)
-            #output_projections = self._output_projection_layer(decoder_hidden)
-            
-            # (batch_size, target_embedding_dim)
-            predicted_targets_vecs = self._output_projection_layer(decoder_hidden)
-            
+            output_projections = self._output_projection_layer(decoder_hidden)
             # list of (batch_size, 1, num_classes)
-            step_predicted_vecs.append(predicted_targets_vecs.unsqueeze(1))
-            #class_probabilities = F.softmax(output_projections, dim=-1)
-            #_, predicted_classes = torch.max(class_probabilities, 1)
-            #step_probabilities.append(class_probabilities.unsqueeze(1))
-            last_predicted_vector = predicted_targets_vecs
+            step_logits.append(output_projections.unsqueeze(1))
+            class_probabilities = F.softmax(output_projections, dim=-1)
+            _, predicted_classes = torch.max(class_probabilities, 1)
+            step_probabilities.append(class_probabilities.unsqueeze(1))
+            last_predictions = predicted_classes
             # (batch_size, 1)
-            #step_predictions.append(last_predictions.unsqueeze(1))
-        # step_predicted_vecs is a list containing tensors of shape (batch_size, 1, target_embedding_dim)
+            step_predictions.append(last_predictions.unsqueeze(1))
+        # step_logits is a list containing tensors of shape (batch_size, 1, num_classes)
         # This is (batch_size, num_decoding_steps, num_classes)
-        predicted_vecs = torch.cat(step_predicted_vecs, 1)
-        #class_probabilities = torch.cat(step_probabilities, 1)
-        #all_predictions = torch.cat(step_predictions, 1)
-        output_dict = {"predicted_vecs": predicted_vecs}
-        
+        logits = torch.cat(step_logits, 1)
+        class_probabilities = torch.cat(step_probabilities, 1)
+        all_predictions = torch.cat(step_predictions, 1)
+        output_dict = {"logits": logits,
+                       "class_probabilities": class_probabilities,
+                       "predictions": all_predictions}
         if tgt_tokens:
             target_mask = get_text_field_mask(tgt_tokens)
-            loss = self._get_loss(predicted_vecs, targets, target_mask)
+            loss = self._get_loss(logits, targets, target_mask, self._label_smoothing)
             output_dict["loss"] = loss
             # TODO: Define metrics
         return output_dict
 
     def _prepare_decode_step_input(self,
-                                   embedded_input: torch.LongTensor,
+                                   input_indices: torch.LongTensor,
                                    decoder_hidden_state: torch.LongTensor = None,
                                    encoder_outputs: torch.LongTensor = None,
                                    encoder_outputs_mask: torch.LongTensor = None) -> torch.LongTensor:
@@ -211,9 +204,9 @@ class RegrSeq2Seq(Model):
         average of the encoder inputs.
         Parameters
         ----------
-        embedded_input : torch.LongTensor 
-            Vectors of either the gold inputs to the decoder or the predicted vectors from the
-            previous timestep. Shape: (batch_size, target_embedding_dim)
+        input_indices : torch.LongTensor
+            Indices of either the gold inputs to the decoder or the predicted labels from the
+            previous timestep.
         decoder_hidden_state : torch.LongTensor, optional (not needed if no attention)
             Output of from the decoder at the last time step. Needed only if using attention.
         encoder_outputs : torch.LongTensor, optional (not needed if no attention)
@@ -223,7 +216,7 @@ class RegrSeq2Seq(Model):
         """
         # input_indices : (batch_size,)  since we are processing these one timestep at a time.
         # (batch_size, target_embedding_dim)
-        # embedded_input = self._target_embedder(input_indices)
+        embedded_input = self._target_embedder(input_indices)
         if self._attention_function:
             # encoder_outputs : (batch_size, input_sequence_length, encoder_output_dim)
             # Ensuring mask is also a FloatTensor. Or else the multiplication within attention will
@@ -239,47 +232,34 @@ class RegrSeq2Seq(Model):
             return embedded_input
 
     @staticmethod
-    def _get_loss(predicted_targets_vecs: torch.LongTensor,
-                  targets_ids: torch.LongTensor,
-                  target_mask: torch.LongTensor) -> torch.LongTensor:
+    def _get_loss(logits: torch.LongTensor,
+                  targets: torch.LongTensor,
+                  target_mask: torch.LongTensor,
+                  label_smoothing) -> torch.LongTensor:
         """
-        Takes predicted_targets_vecs (predicted based on decoder's outputs) of size (batch_size,
-        num_decoding_steps, target_embedding_dim), target indices of size (batch_size, num_decoding_steps+1)
-        and corresponding masks of size (batch_size, num_decoding_steps+1) steps and computes regression loss
-        while taking the mask into account. The target_ids are embedded using pretrained embeddings by _target_embedder.
-        
-        
-        The length of ``target_ids`` is expected to be greater than that of ``predicted_targets_vecs`` because the
+        Takes logits (unnormalized outputs from the decoder) of size (batch_size,
+        num_decoding_steps, num_classes), target indices of size (batch_size, num_decoding_steps+1)
+        and corresponding masks of size (batch_size, num_decoding_steps+1) steps and computes cross
+        entropy loss while taking the mask into account.
+        The length of ``targets`` is expected to be greater than that of ``logits`` because the
         decoder does not need to compute the output corresponding to the last timestep of
-        ``target_ids``. This method aligns the inputs appropriately to compute the loss.
-        During training, we want the predicted_targets_vec corresponding to timestep i to be similar to the target
+        ``targets``. This method aligns the inputs appropriately to compute the loss.
+        During training, we want the logit corresponding to timestep i to be similar to the target
         token from timestep i + 1. That is, the targets should be shifted by one timestep for
         appropriate comparison.  Consider a single example where the target has 3 words, and
         padding is to 7 tokens.
            The complete sequence would correspond to <S> w1  w2  w3  <E> <P> <P>
            and the mask would be                     1   1   1   1   1   0   0
-           and let the predicted_targets_vecs be     v1  v2  v3  v4  v5  v6
+           and let the logits be                     l1  l2  l3  l4  l5  l6
         We actually need to compare:
            the sequence           w1  w2  w3  <E> <P> <P>
            with masks             1   1   1   1   0   0
-           against                v1  v2  v3  v4  v5  v6
+           against                l1  l2  l3  l4  l5  l6
            (where the input was)  <S> w1  w2  w3  <E> <P>
         """
-        
-        relevant_target_ids = target_ids[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
+        relevant_targets = targets[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
         relevant_mask = target_mask[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
-        
-        # embedd groundtruth targets with embedding module
-        # shape: (batch_size, num_decoding_steps, target_embedding dim)
-        embedded_golden_targets = self._target_embedder(relevant_target_ids) 
-        
-        loss = []
-        if self._loss_type == "mse":
-            loss = ((embedded_golden_targets - predicted_targets_vecs) ** 2).mean()
-            # loss = ((embedded_golden_targets.detach() - predicted_targets_vecs) ** 2).mean()
-        else:
-            raise ValueError(self._loss_type + " is not implemented. Choose e.g. mse instead ")
-            
+        loss = sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask,                                                           label_smoothing = label_smoothing)
         return loss
 
     @overrides

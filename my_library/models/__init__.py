@@ -1,2 +1,3 @@
-from my_library.models.academic_paper_classifier import AcademicPaperClassifier
 from my_library.models.seq2seq import Seq2Seq
+from my_library.models.seq2seq_pretrained import PretrSeq2Seq
+from my_library.models.seq2seq_regressional import RegrSeq2Seq

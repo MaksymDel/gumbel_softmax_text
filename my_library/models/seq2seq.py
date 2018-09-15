@@ -15,7 +15,7 @@ from allennlp.modules.attention import LegacyAttention
 from allennlp.modules.similarity_functions import SimilarityFunction
 from allennlp.modules.token_embedders import Embedding
 from allennlp.models.model import Model
-from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits, weighted_sum
+from allennlp.nn.util import get_text_field_mask, sequence_cross_entropy_with_logits, weighted_sum, get_final_encoder_states
 
 
 @Model.register("seq2seq")
@@ -71,8 +71,10 @@ class Seq2Seq(Model):
                  target_namespace: str = "tokens",
                  target_embedding_dim: int = None,
                  attention_function: SimilarityFunction = None,
-                 scheduled_sampling_ratio: float = 0.0) -> None:
+                 scheduled_sampling_ratio: float = 0.0,
+                 label_smoothing: float = None) -> None:
         super(Seq2Seq, self).__init__(vocab)
+        self._label_smoothing = label_smoothing
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps
@@ -122,7 +124,7 @@ class Seq2Seq(Model):
         batch_size, _, _ = embedded_input.size()
         source_mask = get_text_field_mask(src_tokens)
         encoder_outputs = self._encoder(embedded_input, source_mask)
-        final_encoder_output = encoder_outputs[:, -1]  # (batch_size, encoder_output_dim)
+        final_encoder_output = get_final_encoder_states(encoder_outputs, source_mask, True)  # (batch_size, encoder_output_dim)
         if tgt_tokens:
             targets = tgt_tokens["tokens"]
             target_sequence_length = targets.size()[1]
@@ -171,7 +173,7 @@ class Seq2Seq(Model):
                        "predictions": all_predictions}
         if tgt_tokens:
             target_mask = get_text_field_mask(tgt_tokens)
-            loss = self._get_loss(logits, targets, target_mask)
+            loss = self._get_loss(logits, targets, target_mask, self._label_smoothing)
             output_dict["loss"] = loss
             # TODO: Define metrics
         return output_dict
@@ -221,7 +223,8 @@ class Seq2Seq(Model):
     @staticmethod
     def _get_loss(logits: torch.LongTensor,
                   targets: torch.LongTensor,
-                  target_mask: torch.LongTensor) -> torch.LongTensor:
+                  target_mask: torch.LongTensor,
+                  label_smoothing) -> torch.LongTensor:
         """
         Takes logits (unnormalized outputs from the decoder) of size (batch_size,
         num_decoding_steps, num_classes), target indices of size (batch_size, num_decoding_steps+1)
@@ -245,7 +248,7 @@ class Seq2Seq(Model):
         """
         relevant_targets = targets[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
         relevant_mask = target_mask[:, 1:].contiguous()  # (batch_size, num_decoding_steps)
-        loss = sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask)
+        loss = sequence_cross_entropy_with_logits(logits, relevant_targets, relevant_mask,                                                           label_smoothing = label_smoothing)
         return loss
 
     @overrides

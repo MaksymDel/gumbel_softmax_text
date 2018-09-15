@@ -1,0 +1,1 @@
+allennlp train --include-package my_library experiments/seq2seq_vanilla_words_pretr.json -s models/seq2seq_vanilla_words_pretr_2

@@ -23,13 +23,14 @@ class Seq2SeqPredictor(Predictor):
         If your inputs are not in JSON-lines format (e.g. you have a CSV)
         you can override this function to parse them correctly.
         """
-
-        return json.dumps({"src": line})
+        src, tgt = line.split('\t')
+        return json.dumps({"src": src})
 
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
-        print(json_dict)
-        src = json_dict['src']
+        #print(json_dict)
+        decoded = json.loads(json_dict)
+        src = decoded["src"]
         instance = self._dataset_reader.text_to_instance(source_string=src)
 
         return instance
@@ -39,4 +40,4 @@ class Seq2SeqPredictor(Predictor):
         If you don't want your outputs in JSON-lines format
         you can override this function to output them differently.
         """
-        return outputs['predicted_tokens']
+        return " ".join(outputs['predicted_tokens']) + " \n"

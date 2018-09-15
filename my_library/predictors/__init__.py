@@ -1,2 +1,1 @@
-from my_library.predictors.paper_classifier_predictor import PaperClassifierPredictor
 from my_library.predictors.seq2seq_predictor import Seq2SeqPredictor

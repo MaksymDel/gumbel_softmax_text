@@ -156,7 +156,7 @@ class RegrSeq2Seq(Model):
         
         for timestep in range(num_decoding_steps):
             if self.training and torch.rand(1).item() >= self._scheduled_sampling_ratio:
-                embedded_input_tgt = self._target_embedder(self.targets[:, timestep])
+                embedded_input_tgt = self._target_embedder(targets[:, timestep])
             else:
                 if timestep == 0:
                     # For the first timestep, when we do not have targets, we input start symbols.
@@ -191,7 +191,7 @@ class RegrSeq2Seq(Model):
         
         if tgt_tokens:
             target_mask = get_text_field_mask(tgt_tokens)
-            loss = self._get_loss(predicted_vecs, targets, target_mask)
+            loss = self._get_loss(predicted_vecs, targets, target_mask, self._target_embedder, self._loss_type)
             output_dict["loss"] = loss
             # TODO: Define metrics
         return output_dict
@@ -200,7 +200,8 @@ class RegrSeq2Seq(Model):
                                    embedded_input: torch.LongTensor,
                                    decoder_hidden_state: torch.LongTensor = None,
                                    encoder_outputs: torch.LongTensor = None,
-                                   encoder_outputs_mask: torch.LongTensor = None) -> torch.LongTensor:
+                                   encoder_outputs_mask: torch.LongTensor = None
+                                   ) -> torch.LongTensor:
         """
         Given the input indices for the current timestep of the decoder, and all the encoder
         outputs, compute the input at the current timestep.  Note: This method is agnostic to
@@ -240,8 +241,10 @@ class RegrSeq2Seq(Model):
 
     @staticmethod
     def _get_loss(predicted_targets_vecs: torch.LongTensor,
-                  targets_ids: torch.LongTensor,
-                  target_mask: torch.LongTensor) -> torch.LongTensor:
+                  target_ids: torch.LongTensor,
+                  target_mask: torch.LongTensor,
+                  target_embedder: TokenEmbedder,
+                  loss_type) -> torch.LongTensor:
         """
         Takes predicted_targets_vecs (predicted based on decoder's outputs) of size (batch_size,
         num_decoding_steps, target_embedding_dim), target indices of size (batch_size, num_decoding_steps+1)
@@ -271,37 +274,37 @@ class RegrSeq2Seq(Model):
         
         # embedd groundtruth targets with embedding module
         # shape: (batch_size, num_decoding_steps, target_embedding dim)
-        embedded_golden_targets = self._target_embedder(relevant_target_ids) 
+        embedded_golden_targets = target_embedder(relevant_target_ids) 
         
-        loss = []
-        if self._loss_type == "mse":
+        loss = None
+        if loss_type == "mse":
             loss = ((embedded_golden_targets - predicted_targets_vecs) ** 2).mean()
             # loss = ((embedded_golden_targets.detach() - predicted_targets_vecs) ** 2).mean()
         else:
-            raise ValueError(self._loss_type + " is not implemented. Choose e.g. mse instead ")
+            raise ValueError(loss_type + " is not implemented. Choose e.g. mse instead ")
             
         return loss
 
-    @overrides
-    def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        """
-        This method overrides ``Model.decode``, which gets called after ``Model.forward``, at test
-        time, to finalize predictions. The logic for the decoder part of the encoder-decoder lives
-        within the ``forward`` method.
-        This method trims the output predictions to the first end symbol, replaces indices with
-        corresponding tokens, and adds a field called ``predicted_tokens`` to the ``output_dict``.
-        """
-        predicted_indices = output_dict["predictions"]
-        if not isinstance(predicted_indices, numpy.ndarray):
-            predicted_indices = predicted_indices.detach().cpu().numpy()
-        all_predicted_tokens = []
-        for indices in predicted_indices:
-            indices = list(indices)
-            # Collect indices till the first end_symbol
-            if self._end_index in indices:
-                indices = indices[:indices.index(self._end_index)]
-            predicted_tokens = [self.vocab.get_token_from_index(x, namespace=self._target_namespace)
-                                for x in indices]
-            all_predicted_tokens.append(predicted_tokens)
-        output_dict["predicted_tokens"] = all_predicted_tokens
-        return output_dict
+#     @overrides
+#     def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+#         """
+#         This method overrides ``Model.decode``, which gets called after ``Model.forward``, at test
+#         time, to finalize predictions. The logic for the decoder part of the encoder-decoder lives
+#         within the ``forward`` method.
+#         This method trims the output predictions to the first end symbol, replaces indices with
+#         corresponding tokens, and adds a field called ``predicted_tokens`` to the ``output_dict``.
+#         """
+# #         predicted_indices = output_dict["predictions"]
+# #         if not isinstance(predicted_indices, numpy.ndarray):
+# #             predicted_indices = predicted_indices.detach().cpu().numpy()
+# #         all_predicted_tokens = []
+# #         for indices in predicted_indices:
+# #             indices = list(indices)
+# #             # Collect indices till the first end_symbol
+# #             if self._end_index in indices:
+# #                 indices = indices[:indices.index(self._end_index)]
+# #             predicted_tokens = [self.vocab.get_token_from_index(x, namespace=self._target_namespace)
+# #                                 for x in indices]
+# #             all_predicted_tokens.append(predicted_tokens)
+# #         output_dict["predicted_vecs"] = all_predicted_tokens
+#         return output_dict

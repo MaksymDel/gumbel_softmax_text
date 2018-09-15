@@ -8,11 +8,12 @@
       "target_token_indexers":{"tokens": {"namespace": "target_words", "lowercase_tokens": true}}
     },
     "train_data_path": "data/de-en/train.tok.do50.both",
+    #"train_data_path": "data/de-en/valid.tok.do50.both", # for debug
     "validation_data_path": "data/de-en/valid.tok.do50.both",
     "model": {
-      "type": "pretr_seq2seq",
+      "type": "regr_seq2seq",
       "scheduled_sampling_ratio": 0.0,
-      "loss_tyoe": "mse",
+      "loss_type": "mse",
       "source_embedder": {
         "tokens": {
           "type": "embedding",

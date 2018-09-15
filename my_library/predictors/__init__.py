@@ -1,1 +1,2 @@
 from my_library.predictors.seq2seq_predictor import Seq2SeqPredictor
+from my_library.predictors.regr_seq2seq_predictor import RegrSeq2SeqPredictor

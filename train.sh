@@ -1,1 +1,1 @@
-allennlp train --include-package my_library experiments/seq2seq_vanilla_words_regr.json -s models/seq2seq_vanilla_words_regr_1
+allennlp train --include-package my_library experiments/seq2seq_vanilla_words_regr.json -s models/seq2seq_vanilla_words_regr_3

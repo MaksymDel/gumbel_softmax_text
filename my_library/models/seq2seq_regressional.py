@@ -7,6 +7,7 @@ import torch
 from torch.nn.modules.rnn import LSTMCell
 from torch.nn.modules.linear import Linear
 import torch.nn.functional as F
+from torch.nn.functional import cosine_similarity
 
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.vocabulary import Vocabulary
@@ -276,10 +277,24 @@ class RegrSeq2Seq(Model):
         # shape: (batch_size, num_decoding_steps, target_embedding dim)
         embedded_golden_targets = target_embedder(relevant_target_ids) 
         
+        #print("embedded_golden_targets.size():", embedded_golden_targets.size())
+        #print("predicted_targets_vecs.size():", predicted_targets_vecs.size())
+        #print("relevant_mask.size():", relevant_mask.size())
+        
+        # mask stuff
+        relevant_mask = relevant_mask.unsqueeze(2).float() 
+        embedded_golden_targets = embedded_golden_targets * relevant_mask
+        predicted_targets_vecs = predicted_targets_vecs * relevant_mask
+        
         loss = None
         if loss_type == "mse":
             loss = ((embedded_golden_targets - predicted_targets_vecs) ** 2).mean()
             # loss = ((embedded_golden_targets.detach() - predicted_targets_vecs) ** 2).mean()
+        elif loss_type == "cos":
+            sim_scores = cosine_similarity(embedded_golden_targets, predicted_targets_vecs, dim=2)
+            I = torch.ones_like(sim_scores)
+            loss = I - sim_scores
+            loss = loss.mean()
         else:
             raise ValueError(loss_type + " is not implemented. Choose e.g. mse instead ")
             

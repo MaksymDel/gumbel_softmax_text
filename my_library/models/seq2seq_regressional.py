@@ -6,6 +6,7 @@ from overrides import overrides
 import torch
 from torch.nn.modules.rnn import LSTMCell
 from torch.nn.modules.linear import Linear
+from allennlp.modules import FeedForward
 import torch.nn.functional as F
 from torch.nn.functional import cosine_similarity
 
@@ -74,7 +75,8 @@ class RegrSeq2Seq(Model):
                  scheduled_sampling_ratio: float = 0.0,
                  target_embedding_dim: int = None,
                  target_tokens_embedder: TokenEmbedder = None,
-                 loss_type: str = None
+                 loss_type: str = None,
+                 output_projection_layer: FeedForward = None
                  ) -> None:
         super(RegrSeq2Seq, self).__init__(vocab)
         self._source_embedder = source_embedder
@@ -93,17 +95,23 @@ class RegrSeq2Seq(Model):
         # we're using attention with ``DotProductSimilarity``, this is needed.
         self._decoder_output_dim = self._encoder.get_output_dim()
         
-        target_embedding_dim = target_embedding_dim or self._source_embedder.get_output_dim()
-        self._target_embedder = Embedding(num_classes, target_embedding_dim)
             
         
         # PRETRAINED PART
         if target_tokens_embedder:
+
             target_embedding_dim = target_tokens_embedder.get_output_dim()
             self._target_embedder = target_tokens_embedder 
+            print('if', target_embedding_dim)
+        else:
+            target_embedding_dim = target_embedding_dim or self._source_embedder.get_output_dim()
+            self._target_embedder = Embedding(num_classes, target_embedding_dim)
+
+            print('else', target_embedding_dim)
         
         self._target_embedding_dim = target_embedding_dim
-            
+        print('after', self._target_embedding_dim, self._decoder_output_dim)
+        
         if self._attention_function:
             self._decoder_attention = LegacyAttention(self._attention_function)
             # The output of attention, a weighted average over encoder outputs, will be
@@ -114,7 +122,10 @@ class RegrSeq2Seq(Model):
         # TODO (pradeep): Do not hardcode decoder cell type.
         self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
         # layer that predicts embedding vector for target
-        self._output_projection_layer = Linear(self._decoder_output_dim, self._target_embedding_dim)
+        if output_projection_layer:
+            self._output_projection_layer = output_projection_layer
+        else:
+            self._output_projection_layer = Linear(self._decoder_output_dim, self._target_embedding_dim)
         
         self._loss_type = loss_type or "mse"
 

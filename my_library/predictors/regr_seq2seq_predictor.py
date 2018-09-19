@@ -15,7 +15,8 @@ class RegrSeq2SeqPredictor(Predictor):
         """
         Predict for ``Seq2Seq`` model
         """
-        return self.predict_json({"src" : src})['predicted_tokens']
+        
+        return self.predict_json({"src" : src})['predicted_vecs']
 
     @overrides
     def load_line(self, line: str) -> JsonDict:  # pylint: disable=no-self-use
@@ -29,7 +30,8 @@ class RegrSeq2SeqPredictor(Predictor):
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         #print(json_dict)
-        decoded = json.loads(json_dict)
+        #decoded = json.loads(json_dict)
+        decoded = json_dict
         src = decoded["src"]
         instance = self._dataset_reader.text_to_instance(source_string=src)
 

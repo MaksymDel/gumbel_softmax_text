@@ -10,7 +10,7 @@
     "train_data_path": "data/de-en/train.tok.do50.both",
     "validation_data_path": "data/de-en/valid.tok.do50.both",
     "model": {
-      "type": "vanillagit resetr",
+      "type": "vanilla",
       "scheduled_sampling_ratio": 0.0, // teacher forcing
       "source_embedder": {
         "tokens": {

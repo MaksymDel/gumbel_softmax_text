@@ -118,17 +118,17 @@ class SimpleSeq2Seq(Model):
 
         Parameters
         ----------
-        source_tokens : Dict[str, torch.LongTensor]
+        src_tokens : Dict[str, torch.LongTensor]
            The output of ``TextField.as_array()`` applied on the source ``TextField``. This will be
            passed through a ``TextFieldEmbedder`` and then through an encoder.
-        target_tokens : Dict[str, torch.LongTensor], optional (default = None)
+        tgt_tokens : Dict[str, torch.LongTensor], optional (default = None)
            Output of ``Textfield.as_array()`` applied on target ``TextField``. We assume that the
            target tokens are also represented as a ``TextField``.
         """
         # (batch_size, input_sequence_length, encoder_output_dim)
-        embedded_input = self._source_embedder(source_tokens)
+        embedded_input = self._source_embedder(src_tokens)
         batch_size, _, _ = embedded_input.size()
-        source_mask = util.get_text_field_mask(source_tokens)
+        source_mask = util.get_text_field_mask(src_tokens)
         encoder_outputs = self._encoder(embedded_input, source_mask)
         # (batch_size, encoder_output_dim)
         final_encoder_output = util.get_final_encoder_states(
@@ -136,8 +136,8 @@ class SimpleSeq2Seq(Model):
                 source_mask,
                 self._encoder.is_bidirectional()
         )
-        if target_tokens:
-            targets = target_tokens["tokens"]
+        if tgt_tokens:
+            targets = tgt_tokens["tokens"]
             target_sequence_length = targets.size()[1]
             # The last input from the target is either padding or the end symbol. Either way, we
             # don't have to process it.
@@ -157,7 +157,7 @@ class SimpleSeq2Seq(Model):
             if self.training:
                 if torch.rand(1).item() >= self._scheduled_sampling_ratio:
                     use_gold_targets = True
-            elif target_tokens:
+            elif tgt_tokens:
                 use_gold_targets = True
 
             if use_gold_targets:
@@ -198,8 +198,8 @@ class SimpleSeq2Seq(Model):
         output_dict = {"logits": logits,
                        "class_probabilities": class_probabilities,
                        "predictions": all_argmax_classes}
-        if target_tokens:
-            target_mask = util.get_text_field_mask(target_tokens)
+        if tgt_tokens:
+            target_mask = util.get_text_field_mask(tgt_tokens)
             loss = self._get_loss(logits, targets, target_mask)
             output_dict["loss"] = loss
             # TODO: Define metrics

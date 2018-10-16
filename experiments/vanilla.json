@@ -3,14 +3,14 @@
       "max_vocab_size": 50000
     },
     "dataset_reader":{
-      "type":"vanilla",
+      "type":"simple_seq2seq",
       "source_token_indexers":{"tokens": {"namespace": "source_words", "lowercase_tokens": true}},
       "target_token_indexers":{"tokens": {"namespace": "target_words", "lowercase_tokens": true}}
     },
     "train_data_path": "data/de-en/train.tok.do50.both",
     "validation_data_path": "data/de-en/valid.tok.do50.both",
     "model": {
-      "type": "seq2seq",
+      "type": "vanilla",
       "scheduled_sampling_ratio": 0.0, // teacher forcing
       "source_embedder": {
         "tokens": {

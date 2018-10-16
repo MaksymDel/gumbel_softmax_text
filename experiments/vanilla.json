@@ -1,6 +1,6 @@
 {
     "vocabulary": {
-      "max_vocab_size": 50000
+      "max_vocab_size": 32000
     },
     "dataset_reader":{
       "type":"simple_seq2seq",

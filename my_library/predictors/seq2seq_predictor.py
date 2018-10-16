@@ -23,7 +23,10 @@ class Seq2SeqPredictor(Predictor):
         If your inputs are not in JSON-lines format (e.g. you have a CSV)
         you can override this function to parse them correctly.
         """
-        src, tgt = line.split('\t')
+        try:
+            src, tgt = line.split('\t')
+        except ValueError:
+            src = line
         return json.dumps({"src": src})
 
     @overrides

@@ -90,6 +90,8 @@ class SimpleSeq2Seq(Model):
         # hidden state of the decoder with that of the final hidden states of the encoder. Also, if
         # we're using attention with ``DotProductSimilarity``, this is needed.
         self._decoder_output_dim = self._encoder.get_output_dim()
+        target_embedding_dim = target_embedding_dim or self._source_embedder.get_output_dim()
+        self._target_embedder = Embedding(num_classes, target_embedding_dim)
         if self._attention_function:
             self._decoder_attention = LegacyAttention(self._attention_function)
             # The output of attention, a weighted average over encoder outputs, will be
@@ -101,8 +103,6 @@ class SimpleSeq2Seq(Model):
         self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
         self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
 
-        target_embedding_dim = target_embedding_dim or self._source_embedder.get_output_dim()
-        self._target_embedder = Embedding(num_classes, target_embedding_dim)
 
         # regressional part
         self._loss_type = "mse"

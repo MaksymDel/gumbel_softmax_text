@@ -18,8 +18,8 @@ from allennlp.models.model import Model
 from allennlp.nn import util
 
 
-@Model.register("vanilla_predict_vector")
-class VanillaPredictVector(Model):
+@Model.register("vanilla_softmax_at_inference")
+class VanillaSoftmaxAtInference(Model):
     """
     This ``SimpleSeq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then
     uses the encoded representations to decode another sequence.  You can use this as the basis for
@@ -74,7 +74,7 @@ class VanillaPredictVector(Model):
                  target_embedding_dim: int = None,
                  attention_function: SimilarityFunction = None,
                  scheduled_sampling_ratio: float = 0.0) -> None:
-        super(VanillaPredictVector, self).__init__(vocab)
+        super(VanillaSoftmaxAtInference, self).__init__(vocab)
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps
@@ -162,17 +162,18 @@ class VanillaPredictVector(Model):
 
             if use_gold_targets:
                 input_choices = targets[:, timestep]
+                embedded_input = self._target_embedder(input_choices)
             else:
                 if timestep == 0:
                     # For the first timestep, when we do not have targets, we input start symbols.
                     # (batch_size,)
                     input_choices = source_mask.new_full((batch_size,), fill_value=self._start_index)
+                    embedded_input = self._target_embedder(input_choices)
                 else:
-                    input_choices = last_argmax_classes
+                    embedded_input = embedded_output # at inference time feed softmax*embedding_matrix vectors
 
-            # input_indices : (batch_size,)  since we are processing these one timestep at a time.
+            # input_choices : (batch_size,)  since we are processing these one timestep at a time.
             # (batch_size, target_embedding_dim)
-            embedded_input = self._target_embedder(input_choices)
 
             decoder_input = self._prepare_decode_step_input(embedded_input, decoder_hidden,
                                                             encoder_outputs, source_mask)
@@ -185,6 +186,8 @@ class VanillaPredictVector(Model):
 
             class_probabilities = F.softmax(output_projections, dim=-1)
             step_probabilities.append(class_probabilities.unsqueeze(1))
+
+            embedded_output = torch.dot(class_probabilities, self._target_embedder.weight)
 
             _, argmax_classes = torch.max(class_probabilities, 1)
             last_argmax_classes = argmax_classes

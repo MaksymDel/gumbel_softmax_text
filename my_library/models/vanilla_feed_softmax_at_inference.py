@@ -187,7 +187,7 @@ class VanillaSoftmaxAtInference(Model):
             class_probabilities = F.softmax(output_projections, dim=-1)
             step_probabilities.append(class_probabilities.unsqueeze(1))
 
-            embedded_output = torch.matmul(class_probabilities., self._target_embedder.weight)
+            embedded_output = torch.matmul(class_probabilities, self._target_embedder.weight)
 
             _, argmax_classes = torch.max(class_probabilities, 1)
             last_argmax_classes = argmax_classes

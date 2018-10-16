@@ -18,8 +18,8 @@ from allennlp.models.model import Model
 from allennlp.nn import util
 
 
-@Model.register("vanilla")
-class Vanilla(Model):
+@Model.register("vanilla_predict_vector")
+class VanillaPredictVector(Model):
     """
     This ``SimpleSeq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then
     uses the encoded representations to decode another sequence.  You can use this as the basis for
@@ -74,7 +74,7 @@ class Vanilla(Model):
                  target_embedding_dim: int = None,
                  attention_function: SimilarityFunction = None,
                  scheduled_sampling_ratio: float = 0.0) -> None:
-        super(Vanilla, self).__init__(vocab)
+        super(VanillaPredictVector, self).__init__(vocab)
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps

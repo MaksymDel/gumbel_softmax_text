@@ -20,18 +20,10 @@ from allennlp.nn import util
 
 @Model.register("vanilla_softmax_at_inference")
 class VanillaSoftmaxAtInference(Model):
-    """
-    This ``SimpleSeq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then
-    uses the encoded representations to decode another sequence.  You can use this as the basis for
-    a neural machine translation system, an abstractive summarization system, or any other common
-    seq2seq problem.  The model here is simple, but should be a decent starting place for
-    implementing recent models for these tasks.
 
-    This ``SimpleSeq2Seq`` model takes an encoder (:class:`Seq2SeqEncoder`) as an input, and
-    implements the functionality of the decoder.  In this implementation, the decoder uses the
-    encoder's outputs in two ways. The hidden state of the decoder is initialized with the output
-    from the final time-step of the encoder, and when using attention, a weighted average of the
-    outputs from the encoder is concatenated to the inputs of the decoder at every timestep.
+    """
+    Not at inference only actually. Whenever we do self-feeding, we do it with softmax predicted vectors.
+    We do self-feeding during the inference time but also during scheduled sampling.
 
     Parameters
     ----------
@@ -65,6 +57,7 @@ class VanillaSoftmaxAtInference(Model):
         Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
         2015.
     """
+
     def __init__(self,
                  vocab: Vocabulary,
                  source_embedder: TextFieldEmbedder,

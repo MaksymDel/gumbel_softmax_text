@@ -5,3 +5,4 @@ from my_library.models.vanilla import Vanilla
 from my_library.models.vanilla_feed_softmax_at_inference import VanillaSoftmaxAtInference
 from my_library.models.vanilla_feed_softmax_gumbel import VanillaSoftmaxGumbel
 from my_library.models.vanilla_feed_softmax_gumbel_only_train import VanillaSoftmaxGumbelTrain
+from my_library.models.vanilla_feed_softmax_gumbel_detach import VanillaSoftmaxGumbelDetach

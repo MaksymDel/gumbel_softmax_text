@@ -74,7 +74,7 @@ class VanillaSoftmaxGumbelTrain(Model):
                  gumbel_tau: float = 1.0,
                  gumbel_hard: bool = True,
                  gumbel_eps: float = 1e-10) -> None:
-        super(VanillaSoftmaxGumbel, self).__init__(vocab)
+        super(VanillaSoftmaxGumbelTrain, self).__init__(vocab)
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps

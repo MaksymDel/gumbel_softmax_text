@@ -13,8 +13,8 @@
        "type": "vanilla_softmax_gumbel",
 
       "weight_function": "gumbel",
-      "gumbel_tau": 1.0,   // has an effect only if weight func is gumbel
-      "gumbel_hard": false, // has an effect only if weight func is gumbel
+      "gumbel_tau": 0.67,   // has an effect only if weight func is gumbel
+      "gumbel_hard": true, // has an effect only if weight func is gumbel
       "gumbel_eps": 1e-10, // has an effect only if weight func is gumbel
 
       "scheduled_sampling_ratio": 0.5, // teacher forcing in half of cases

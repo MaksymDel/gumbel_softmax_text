@@ -1,1 +1,1 @@
-allennlp predict models/seq2seq_vanilla_words_pretr_2/model.tar.gz data/de-en/valid.tok.do50.both --include-package my_library --predictor seq2seq --output-file data/de-en/hyps.dev.pretr.en --cuda-device 0 --batch-size 100
+allennlp predict models/gumbel_train_and_inf_1.0_true/model.tar.gz data/de-en/valid.tok.do50.de.small --include-package my_library --predictor seq2seq --output-file data/de-en/hyps.dev.vanilla.en.small.train_and_inf_gumbel_1.0_true --cuda-device 0 --batch-size 100

@@ -1,37 +1,41 @@
 from typing import Dict
 
 import numpy
-from overrides import overrides
-
 import torch
-from torch.nn.modules.rnn import LSTMCell
-from torch.nn.modules.linear import Linear
 import torch.nn.functional as F
-
 from allennlp.common.util import START_SYMBOL, END_SYMBOL
 from allennlp.data.vocabulary import Vocabulary
+from allennlp.models.model import Model
 from allennlp.modules import TextFieldEmbedder, Seq2SeqEncoder
 from allennlp.modules.attention import LegacyAttention
 from allennlp.modules.similarity_functions import SimilarityFunction
 from allennlp.modules.token_embedders import Embedding
-from allennlp.models.model import Model
 from allennlp.nn import util
+from overrides import overrides
+from torch.nn.modules.linear import Linear
+from torch.nn.modules.rnn import LSTMCell
 
 
-@Model.register("vanilla")
-class Vanilla(Model):
+@Model.register("differentiable_nll")
+class Rnn2RnnDifferentiableNll(Model):
     """
-    This ``SimpleSeq2Seq`` class is a :class:`Model` which takes a sequence, encodes it, and then
-    uses the encoded representations to decode another sequence.  You can use this as the basis for
-    a neural machine translation system, an abstractive summarization system, or any other common
-    seq2seq problem.  The model here is simple, but should be a decent starting place for
-    implementing recent models for these tasks.
+    Vanilla seq2seq NMT model that produces differentiable output (which is useful e.g. in GANs).
 
-    This ``SimpleSeq2Seq`` model takes an encoder (:class:`Seq2SeqEncoder`) as an input, and
-    implements the functionality of the decoder.  In this implementation, the decoder uses the
-    encoder's outputs in two ways. The hidden state of the decoder is initialized with the output
-    from the final time-step of the encoder, and when using attention, a weighted average of the
-    outputs from the encoder is concatenated to the inputs of the decoder at every timestep.
+    Consider following perspective. The output of NMT system is a list of one-hot vectors representing output words.
+    Having this list, we can either obtain output word embeddings by matmul with embedding matrix or index target
+    vocabulary and obtain word strings. In the first case, however, the result vectors are non differentiable,
+    because we obtained one-hot vectors using argmax over logits (derivative of argmax is zero).
+
+    There are two workarounds that model offers:
+    1) using plain softmax distribution instead of one-hot vectors.
+    2) obtaining one-hot vectors via Gumbel softamax
+
+    In the first case, we simply multiply embedding matrix by softmax weights, and get a point in target embedding
+    space (no argmax involved -> differentiable). In the second case, our one-hot vectors are differentiable since
+    the are the result of differentiable Gumbel softmax operation. It might be better, because it might prevent
+    potential GAN discriminator from learning to separate one-hot based embeddings versus softmax based embeddings.
+
+    Uses cross-entropy loss as usual seq2seq models.
 
     Parameters
     ----------
@@ -64,7 +68,26 @@ class Vanilla(Model):
         using target side ground truth labels.  See the following paper for more information:
         Scheduled Sampling for Sequence Prediction with Recurrent Neural Networks. Bengio et al.,
         2015.
+    weight_function, optional (options = {"gumbel", "softmax"}, default = "softmax")
+        Either to multiply target embedding matrix by softmax distribution or by gumbel output
+    gumbel_tau: float, optional (default = 1.0)
+        Temperature in Gumbel softmax
+    gumbel_hard: bool, optional (default = True)
+        Gumbel softmax can also return soft distribution (similar to softmax) if this param equals False
+    gumbel_eps: float, optional (default = 1e-10)
+        Epsilon parameter in Gumbel softmax
+    gumbel_argmax_from_logits: bool, optional (default = False)
+        If Gumbel is and we decide to do argmax at inference, this allows to use argmax over logits and not over Gumbel
+        output
+    infer_with_argmax: bool, optional (default = True)
+        This allows to multiply target embedding matrix by argmax of output of (Gumbel) softmax at inference time
+    detach_self_feeding: bool, optional (default = True)
+        During self-feeding (scheduled sampling ratio > 0) we pass the produced word embedding to the next decoder
+        timestep. However, it is now differentiable, so this parameter allows to break computational graph to make the
+        whole thing match the case of vanilla seq2seq.
+
     """
+
     def __init__(self,
                  vocab: Vocabulary,
                  source_embedder: TextFieldEmbedder,
@@ -73,8 +96,16 @@ class Vanilla(Model):
                  target_namespace: str = "tokens",
                  target_embedding_dim: int = None,
                  attention_function: SimilarityFunction = None,
-                 scheduled_sampling_ratio: float = 0.0) -> None:
-        super(Vanilla, self).__init__(vocab)
+                 scheduled_sampling_ratio: float = 0.0,
+                 weight_function="softmax",
+                 gumbel_tau: float = 1.0,
+                 gumbel_hard: bool = True,
+                 gumbel_eps: float = 1e-10,
+                 gumbel_argmax_from_logits: bool = False,
+                 infer_with_argmax: bool = True,
+                 detach_self_feeding: bool = True,
+                 ) -> None:
+        super(Rnn2RnnDifferentiableNll, self).__init__(vocab)
         self._source_embedder = source_embedder
         self._encoder = encoder
         self._max_decoding_steps = max_decoding_steps
@@ -103,10 +134,14 @@ class Vanilla(Model):
         self._decoder_cell = LSTMCell(self._decoder_input_dim, self._decoder_output_dim)
         self._output_projection_layer = Linear(self._decoder_output_dim, num_classes)
 
+        self._weights_calculation_function = weight_function
 
-        # regressional part
-        self._loss_type = "mse"
-        self._weights_calculation_function = "softmax"
+        self._gumbel_tau = gumbel_tau
+        self._gumbel_hard = gumbel_hard
+        self._gamble_eps = gumbel_eps
+        self._infer_with_argmax = infer_with_argmax
+        self._detach_self_feeding = detach_self_feeding
+        self._gumbel_argmax_from_logits = gumbel_argmax_from_logits
 
     @overrides
     def forward(self,  # type: ignore
@@ -126,15 +161,15 @@ class Vanilla(Model):
            target tokens are also represented as a ``TextField``.
         """
         # (batch_size, input_sequence_length, encoder_output_dim)
-        embedded_input = self._source_embedder(src_tokens)
-        batch_size, _, _ = embedded_input.size()
+        embedded_src_tokens = self._source_embedder(src_tokens)
+        batch_size, _, _ = embedded_src_tokens.size()
         source_mask = util.get_text_field_mask(src_tokens)
-        encoder_outputs = self._encoder(embedded_input, source_mask)
+        encoder_outputs = self._encoder(embedded_src_tokens, source_mask)
         # (batch_size, encoder_output_dim)
         final_encoder_output = util.get_final_encoder_states(
-                encoder_outputs,
-                source_mask,
-                self._encoder.is_bidirectional()
+            encoder_outputs,
+            source_mask,
+            self._encoder.is_bidirectional()
         )
         if tgt_tokens:
             targets = tgt_tokens["tokens"]
@@ -146,7 +181,6 @@ class Vanilla(Model):
             num_decoding_steps = self._max_decoding_steps
         decoder_hidden = final_encoder_output
         decoder_context = encoder_outputs.new_zeros(batch_size, self._decoder_output_dim)
-        last_argmax_classes = None
         step_logits = []
         step_probabilities = []
         step_argmax_classes = []
@@ -162,19 +196,20 @@ class Vanilla(Model):
 
             if use_gold_targets:
                 input_choices = targets[:, timestep]
+                embedded_decoder_input = self._target_embedder(input_choices)  # teacher forcing input
             else:
                 if timestep == 0:
                     # For the first timestep, when we do not have targets, we input start symbols.
                     # (batch_size,)
                     input_choices = source_mask.new_full((batch_size,), fill_value=self._start_index)
+                    embedded_decoder_input = self._target_embedder(input_choices)
                 else:
-                    input_choices = last_argmax_classes
+                    embedded_decoder_input = embedded_output  # at inference time feed softmax*embedding_matrix vectors
 
-            # input_indices : (batch_size,)  since we are processing these one timestep at a time.
+            # input_choices : (batch_size,)  since we are processing these one timestep at a time.
             # (batch_size, target_embedding_dim)
-            embedded_input = self._target_embedder(input_choices)
 
-            decoder_input = self._prepare_decode_step_input(embedded_input, decoder_hidden,
+            decoder_input = self._prepare_decode_step_input(embedded_decoder_input, decoder_hidden,
                                                             encoder_outputs, source_mask)
             decoder_hidden, decoder_context = self._decoder_cell(decoder_input,
                                                                  (decoder_hidden, decoder_context))
@@ -183,11 +218,34 @@ class Vanilla(Model):
             # list of (batch_size, 1, num_classes)
             step_logits.append(output_projections.unsqueeze(1))
 
-            class_probabilities = F.softmax(output_projections, dim=-1)
+            if self._weights_calculation_function == 'softmax':
+                class_probabilities = F.softmax(output_projections, dim=-1)
+            elif self._weights_calculation_function == 'gumbel':
+                class_probabilities = F.gumbel_softmax(output_projections,
+                                                       tau=self.gumbel_tau, hard=self.gumbel_hard, eps=self.gamble_eps)
+            else:
+                raise ValueError("Wrong calculation fucntion. Should be either 'gumbel' or 'softmax'.")
+
             step_probabilities.append(class_probabilities.unsqueeze(1))
 
-            _, argmax_classes = torch.max(class_probabilities, 1)
+            if self._weights_calculation_function == 'gumbel' and self._gumbel_argmax_from_logits:
+                argmax_classes = torch.argmax(output_projections, 1)
+            else:
+                argmax_classes = torch.argmax(class_probabilities, 1)
             last_argmax_classes = argmax_classes
+
+            if self.training:  # if training, we produce differentiable vector based on (Gumbel) softmax
+                if self._detach_self_feeding:
+                    # if we want to break computational graph at self-feeding point, just how it is in usual NMT
+                    embedded_output = torch.matmul(class_probabilities.detach(), self._target_embedder.weight)
+                else:  # it is possible due to differentiability of `class_probabilities` and not possible in usual NMT
+                    embedded_output = torch.matmul(class_probabilities, self._target_embedder.weight)
+            else:  # if inference
+                if self._infer_with_argmax:  # use argmax sampling
+                    embedded_output = self._target_embedder(last_argmax_classes)
+                else:
+                    embedded_output = torch.matmul(class_probabilities, self._target_embedder.weight)
+
             # (batch_size, 1)
             step_argmax_classes.append(last_argmax_classes.unsqueeze(1))
         # step_logits is a list containing tensors of shape (batch_size, 1, num_classes)
@@ -245,7 +303,6 @@ class Vanilla(Model):
             return torch.cat((attended_input, embedded_input), -1)
         else:
             return embedded_input
-
 
     @staticmethod
     def _get_loss(logits: torch.LongTensor,

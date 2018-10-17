@@ -77,14 +77,14 @@ class Rnn2RnnDifferentiableNll(Model):
     gumbel_eps: float, optional (default = 1e-10)
         Epsilon parameter in Gumbel softmax
     gumbel_argmax_from_logits: bool, optional (default = False)
-        If Gumbel is and we decide to do argmax at inference, this allows to use argmax over logits and not over Gumbel
-        output
+        If Gumbel and we decide to do argmax at inference, this allows to use argmax over logits and not over Gumbel
+        output. Works only if infer_with_argmax is true
     infer_with_argmax: bool, optional (default = True)
         This allows to multiply target embedding matrix by argmax of output of (Gumbel) softmax at inference time
     detach_self_feeding: bool, optional (default = True)
         During self-feeding (scheduled sampling ratio > 0) we pass the produced word embedding to the next decoder
         timestep. However, it is now differentiable, so this parameter allows to break computational graph to make the
-        whole thing match the case of vanilla seq2seq.
+        whole thing match the case of vanilla seq2seq. Only makes sense to use during scheduled_sampliong/self-feeding.
 
     """
 
@@ -142,6 +142,11 @@ class Rnn2RnnDifferentiableNll(Model):
         self._infer_with_argmax = infer_with_argmax
         self._detach_self_feeding = detach_self_feeding
         self._gumbel_argmax_from_logits = gumbel_argmax_from_logits
+
+        if self._gumbel_argmax_from_logits:
+            if not self._infer_with_argmax:
+                raise ValueError("If you want to use `gumbel_argmax_from_logits`, `infer_with_argmax` should be true"
+                                 "as well.")
 
     @overrides
     def forward(self,  # type: ignore

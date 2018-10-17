@@ -76,15 +76,23 @@ class Rnn2RnnDifferentiableNll(Model):
         Gumbel softmax can also return soft distribution (similar to softmax) if this param equals False
     gumbel_eps: float, optional (default = 1e-10)
         Epsilon parameter in Gumbel softmax
-    gumbel_argmax_from_logits: bool, optional (default = False)
-        If Gumbel and we decide to do argmax at inference, this allows to use argmax over logits and not over Gumbel
-        output. Works only if infer_with_argmax is true
-    infer_with_argmax: bool, optional (default = True)
-        This allows to multiply target embedding matrix by argmax of output of (Gumbel) softmax at inference time
-    detach_self_feeding: bool, optional (default = True)
-        During self-feeding (scheduled sampling ratio > 0) we pass the produced word embedding to the next decoder
-        timestep. However, it is now differentiable, so this parameter allows to break computational graph to make the
-        whole thing match the case of vanilla seq2seq. Only makes sense to use during scheduled_sampliong/self-feeding.
+    self_feed_with: string, optional (default = distribution
+        During self feeding we can safely do argmax:
+        Options:
+        1) "distribution" = multiply embeddings matrix by output of (Gumbel) softmax. Keeps embedding differentiable
+        2) "argmax_logits" = take argmax over logits (before applying Gumbel) and use result onehot vectors
+        to get word embedding. Makes embedding non differentiable (but it is just self feeding - input to the next
+        decoder timestep, output embeddings are still diffrenetiable)
+        3) "argmax_distribution" = the same as "argmax_logits", but argmax is applied to the output of (Gumbel) softmax
+        4) "detach" - the same as "distribution", but allows to break computational graph to make the
+        whole thing match the case of vanilla seq2seq.
+    infer_with: string, optional (default = distribution)
+        During inference we can optionally do argmax (will make output non-differentiable however).
+        Options:
+        1) "distribution" - multiply embeddings matrix by output of (Gumbel) softmax. Keeps differentiable
+        2) "argmax_logits" - take argmax over logits (before applying Gumbel) and use result onehot vectors
+        to get word embedding
+        3) "argmax_distribution" - the same as "argmax_logits", but argmax is applied to the output of (Gumbel) softmax
 
     """
 
@@ -101,9 +109,8 @@ class Rnn2RnnDifferentiableNll(Model):
                  gumbel_tau: float = 1.0,
                  gumbel_hard: bool = True,
                  gumbel_eps: float = 1e-10,
-                 gumbel_argmax_from_logits: bool = False,
-                 infer_with_argmax: bool = True,
-                 detach_self_feeding: bool = True,
+                 infer_with: str = "distribution",
+                 self_feed_with: str = "distribution",
                  ) -> None:
         super(Rnn2RnnDifferentiableNll, self).__init__(vocab)
         self._source_embedder = source_embedder
@@ -139,14 +146,9 @@ class Rnn2RnnDifferentiableNll(Model):
         self._gumbel_tau = gumbel_tau
         self._gumbel_hard = gumbel_hard
         self._gamble_eps = gumbel_eps
-        self._infer_with_argmax = infer_with_argmax
-        self._detach_self_feeding = detach_self_feeding
-        self._gumbel_argmax_from_logits = gumbel_argmax_from_logits
 
-        if self._gumbel_argmax_from_logits:
-            if not self._infer_with_argmax:
-                raise ValueError("If you want to use `gumbel_argmax_from_logits`, `infer_with_argmax` should be true"
-                                 "as well.")
+        self._infer_with = infer_with
+        self._self_feed_with = self_feed_with
 
     @overrides
     def forward(self,  # type: ignore
@@ -187,8 +189,11 @@ class Rnn2RnnDifferentiableNll(Model):
         decoder_hidden = final_encoder_output
         decoder_context = encoder_outputs.new_zeros(batch_size, self._decoder_output_dim)
         step_logits = []
+        step_predicted_embeddings = []
         step_probabilities = []
-        step_argmax_classes = []
+        if not self.training:
+            step_argmax_classes = []
+
         for timestep in range(num_decoding_steps):
             use_gold_targets = False
             # Use gold tokens at test time when provided and at a rate of 1 -
@@ -208,8 +213,9 @@ class Rnn2RnnDifferentiableNll(Model):
                     # (batch_size,)
                     input_choices = source_mask.new_full((batch_size,), fill_value=self._start_index)
                     embedded_decoder_input = self._target_embedder(input_choices)
-                else:
-                    embedded_decoder_input = embedded_output  # at inference time feed softmax*embedding_matrix vectors
+                else:  # at inference time feed softmax*embedding_matrix vectors
+                    embedded_decoder_input = embedded_token_to_self_feed
+
 
             # input_choices : (batch_size,)  since we are processing these one timestep at a time.
             # (batch_size, target_embedding_dim)
@@ -233,34 +239,51 @@ class Rnn2RnnDifferentiableNll(Model):
 
             step_probabilities.append(class_probabilities.unsqueeze(1))
 
-            if self._weights_calculation_function == 'gumbel' and self._gumbel_argmax_from_logits:
-                argmax_classes = torch.argmax(output_projections, 1)
-            else:
-                argmax_classes = torch.argmax(class_probabilities, 1)
-            last_argmax_classes = argmax_classes
+            embedded_token_to_self_feed = None
+            if self._self_feed_with == "distribution":
+                embedded_token_to_self_feed = torch.matmul(class_probabilities, self._target_embedder.weight)
+            elif self._self_feed_with == "detach":
+                embedded_token_to_self_feed = torch.matmul(class_probabilities.detach(), self._target_embedder.weight)
+            elif self._infer_with == "argmax_distribution":
+                embedded_token_to_self_feed = self._target_embedder(torch.argmax(class_probabilities, 1))
+            elif self._self_feed_with == "argmax_logits":
+                embedded_token_to_self_feed = self._target_embedder(torch.argmax(output_projections, 1))
 
-            if self.training:  # if training, we produce differentiable vector based on (Gumbel) softmax
-                if self._detach_self_feeding:
-                    # if we want to break computational graph at self-feeding point, just how it is in usual NMT
-                    embedded_output = torch.matmul(class_probabilities.detach(), self._target_embedder.weight)
-                else:  # it is possible due to differentiability of `class_probabilities` and not possible in usual NMT
-                    embedded_output = torch.matmul(class_probabilities, self._target_embedder.weight)
-            else:  # if inference
-                if self._infer_with_argmax:  # use argmax sampling
-                    embedded_output = self._target_embedder(last_argmax_classes)
-                else:
-                    embedded_output = torch.matmul(class_probabilities, self._target_embedder.weight)
+            embedded_token_to_return = None
+            if self.training: # during training we always return differentiable tokens
+                embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
+            else:  # at inference we might return different things
+                if self._infer_with == "distribution":
+                    last_argmax_classes = torch.argmax(class_probabilities, 1)
+                    embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
+                elif self._infer_with == "argmax_distribution":
+                    last_argmax_classes = torch.argmax(class_probabilities, 1)
+                    embedded_token_to_return = self._target_embedder(last_argmax_classes)
+                elif self._infer_with == "argmax_logits":
+                    last_argmax_classes = torch.argmax(output_projections, 1)
+                    embedded_token_to_return = self._target_embedder(last_argmax_classes)
 
-            # (batch_size, 1)
-            step_argmax_classes.append(last_argmax_classes.unsqueeze(1))
+            step_predicted_embeddings.append(embedded_token_to_return.unsqueeze(1))
+
+            # TODO: SEPARATING TOKEN TO RETURN AND TOKEN TO SELF-FEED MIGHT BE CRUTIAL IN GAN SETUP
+            # TODO: MAY BE ONLY RETURN LOGITS AND CLASS PROBABILITIES FOR BOTH SOFTMAX AND GUMBEL AT THE SAME TIME
+            if not self.training:
+                # (batch_size, 1)
+                step_argmax_classes.append(last_argmax_classes.unsqueeze(1))
         # step_logits is a list containing tensors of shape (batch_size, 1, num_classes)
         # This is (batch_size, num_decoding_steps, num_classes)
         logits = torch.cat(step_logits, 1)
         class_probabilities = torch.cat(step_probabilities, 1)
-        all_argmax_classes = torch.cat(step_argmax_classes, 1)
+        result_embeddings = torch.cat(step_predicted_embeddings, 1)
+
         output_dict = {"logits": logits,
                        "class_probabilities": class_probabilities,
-                       "predictions": all_argmax_classes}
+                       "result_embeddings": result_embeddings}
+
+        if not self.training:
+            all_argmax_classes = torch.cat(step_argmax_classes, 1)
+            output_dict["predictions"] = all_argmax_classes
+
         if tgt_tokens:
             target_mask = util.get_text_field_mask(tgt_tokens)
             loss = self._get_loss(logits, targets, target_mask)

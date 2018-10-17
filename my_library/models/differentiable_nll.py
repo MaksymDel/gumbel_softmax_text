@@ -265,8 +265,11 @@ class Rnn2RnnDifferentiableNll(Model):
 
             step_predicted_embeddings.append(embedded_token_to_return.unsqueeze(1))
 
-            # TODO: SEPARATING TOKEN TO RETURN AND TOKEN TO SELF-FEED MIGHT BE CRUTIAL IN GAN SETUP
-            # TODO: MAY BE ONLY RETURN LOGITS AND CLASS PROBABILITIES FOR BOTH SOFTMAX AND GUMBEL AT THE SAME TIME
+            # TODO 1: CRUTIAL BUG! I SHOULD NOT COMPUTE LOSS ON LOGTTS!!! IT PREVENTS BACKPROP THROUGH (GUMBEL) SOFTMAX
+            # TODO 1.5: DETACH DOES NOT MAKE SENCE HERE! I COMPUTE ONLY BASED ON LOGITS!
+            # TODO 2: SEPARATING TOKEN TO RETURN AND TOKEN TO SELF-FEED MIGHT BE CRUTIAL IN GAN SETUP
+            # TODO 3: MAY BE ONLY RETURN LOGITS AND CLASS PROBABILITIES FOR BOTH SOFTMAX AND GUMBEL AT THE SAME TIME
+
             if not self.training:
                 # (batch_size, 1)
                 step_argmax_classes.append(last_argmax_classes.unsqueeze(1))

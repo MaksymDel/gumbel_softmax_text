@@ -1,1 +1,0 @@
-sbatch scripts_run_experiments/ss_distr_distr_softmax

@@ -88,10 +88,12 @@ class Rnn2RnnDifferentiableNll(Model):
         whole thing match the case of vanilla seq2seq.
     infer_with: string, optional (default = distribution)
         During inference we can optionally do argmax (will make output non-differentiable however).
+        It these 3 options are the same in case of softmax
         Options:
-        1) "distribution" - multiply embeddings matrix by output of (Gumbel) softmax. Keeps differentiable
+        1) "distribution" - multiply embeddings matrix by output of Gumbel. Keeps differentiable
+        Output (strings) is  the same as argmax_distribution. The same as "argmax_distribution" in this experiment
         2) "argmax_logits" - take argmax over logits (before applying Gumbel) and use result onehot vectors
-        to get word embedding
+        to get word embedding.
         3) "argmax_distribution" - the same as "argmax_logits", but argmax is applied to the output of (Gumbel) softmax
 
     """
@@ -106,11 +108,11 @@ class Rnn2RnnDifferentiableNll(Model):
                  attention_function: SimilarityFunction = None,
                  scheduled_sampling_ratio: float = 0.0,
                  weight_function="softmax",
-                 gumbel_tau: float = 1.0,
+                 gumbel_tau: float = 0.66,
                  gumbel_hard: bool = True,
                  gumbel_eps: float = 1e-10,
                  infer_with: str = "distribution",
-                 self_feed_with: str = "distribution",
+                 self_feed_with: str = "argmax_distribution",
                  ) -> None:
         super(Rnn2RnnDifferentiableNll, self).__init__(vocab)
         self._source_embedder = source_embedder
@@ -259,7 +261,7 @@ class Rnn2RnnDifferentiableNll(Model):
                     embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
                 assert embedded_token_to_return.requires_grad
             else:  # at inference we might return non-differentiable token as well
-                if self._infer_with == "distribution":
+                if self._infer_with == "distribution":  # output is same as argmax_distribution
                     last_argmax_classes = torch.argmax(class_probabilities, 1)
                     embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
                 elif self._infer_with == "argmax_distribution":

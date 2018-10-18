@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#The name of the job is test_job
+#SBATCH -J diff_nmt
+
+#The job requires 1 compute node
+#SBATCH -N 1
+
+#The job requires 1 task per node
+#SBATCH --ntasks-per-node=1
+
+#The maximum walltime of the job is a 5 hours
+#SBATCH -t 05:00:00
+
+#SBATCH --mem=7G
+
+#Leave this here if you need a GPU for your job
+#SBATCH --partition=gpu
+
+#SBATCH --gres=gpu:tesla:1
+
+#SBATCH --exclude=falcon3
+
+#CHANGE THIS 1
+#SBATCH --output=slurm_logs/gumbel_arglogits_arglogits_ss.log
+
+# OUR COMMANDS GO HERE
+
+module load python/3.6.3/CUDA-8.0
+
+source activate konstrukt-cuda8
+
+#CHANGE THIS 2
+EXP_NAME=gumbel_arglogits_arglogits_ss
+FOLDER_NAME=models/$EXP_NAME
+
+rm -r $FOLDER_NAME
+
+allennlp train --include-package my_library experiments/main.json -s $FOLDER_NAME \
+-o \
+ "{"model": \
+        {"weight_function": 'gumbel'}\
+
+        {"infer_with": 'argmax_logits'}\
+        {"self_feed_with": 'argmax_logits'}\
+
+        {"scheduled_sampling_ratio": 0.5}\
+
+
+        # has an effect only when weight function is 'gumbel'
+        {"gumbel_tau": '0.66'}\
+        {"gumbel_hard": 'true'}\
+        {"gumbel_eps": '1e-10'}\
+
+}"
+
+# translate dev
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/$EXP_NAME.dev.en.hyps --cuda-device 0 --batch-size 100
+
+# translate test
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/test.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/$EXP_NAME.test.en.hyps --cuda-device 0 --batch-size 100

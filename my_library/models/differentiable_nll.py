@@ -233,7 +233,7 @@ class Rnn2RnnDifferentiableNll(Model):
                 class_probabilities = F.softmax(output_projections, dim=-1)
             elif self._weights_calculation_function == 'gumbel':
                 class_probabilities = F.gumbel_softmax(output_projections,
-                                                       tau=self.gumbel_tau, hard=self.gumbel_hard, eps=self.gamble_eps)
+                                                       tau=self._gumbel_tau, hard=self._gumbel_hard, eps=self._gamble_eps)
             else:
                 raise ValueError("Wrong calculation fucntion. Should be either 'gumbel' or 'softmax'.")
 

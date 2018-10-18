@@ -15,6 +15,7 @@ from overrides import overrides
 from torch.nn.modules.linear import Linear
 from torch.nn.modules.rnn import LSTMCell
 
+# TODO: FIX LOSS COMPUTATION WITH GUMBEL ONE HOT!
 
 @Model.register("differentiable_nll")
 class Rnn2RnnDifferentiableNll(Model):

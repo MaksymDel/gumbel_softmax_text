@@ -5,7 +5,7 @@ rm -r $FOLDER_NAME
 allennlp train --include-package my_library experiments/tiny_toy_test.json -s $FOLDER_NAME \
 -o \
  "{"model": \
-        {"scheduled_sampling_ratio": 0.5}\
+        {"scheduled_sampling_ratio": 0.0}\
 
         {"infer_with": 'argmax_logits'}\
         {"self_feed_with": 'detach_distribution'}\

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in scripts_run_experiments/*
+for experiment in scripts_run_experiments/*
 do
-  sbatch scripts_run_experiments/$file
+  sbatch $experiment
 done

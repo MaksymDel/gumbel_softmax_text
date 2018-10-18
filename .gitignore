@@ -8,8 +8,6 @@ models/*
 *.ipynb_checkpoints
 mtlabs
 data
-slurm*
-*sbatch
 *.vec
 .idea
 models-old/*

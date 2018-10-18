@@ -2,8 +2,9 @@
 
 FOLDER_NAME=models/`basename "$0"` # it will depend of the script name
 
-rm -r $FOLDER_NAME \
-| allennlp train --include-package my_library experiments/tiny_toy_test.json -s $FOLDER_NAME \
+rm -r $FOLDER_NAME
+
+allennlp train --include-package my_library experiments/main.json -s $FOLDER_NAME \
 -o \
  "{"model": \
         {"scheduled_sampling_ratio": 0.5}\

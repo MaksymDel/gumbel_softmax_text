@@ -239,6 +239,7 @@ class Rnn2RnnDifferentiableNll(Model):
 
             step_probabilities.append(class_probabilities.unsqueeze(1))
 
+            # assign which token to self-feed (pass to the next decoder timestep)
             embedded_token_to_self_feed = None
             if self._self_feed_with == "distribution":
                 embedded_token_to_self_feed = torch.matmul(class_probabilities, self._target_embedder.weight)
@@ -249,10 +250,15 @@ class Rnn2RnnDifferentiableNll(Model):
             elif self._self_feed_with == "argmax_logits":
                 embedded_token_to_self_feed = self._target_embedder(torch.argmax(output_projections, 1))
 
+            # assign which token to
             embedded_token_to_return = None
-            if self.training: # during training we always return differentiable tokens
-                embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
-            else:  # at inference we might return different things
+            if self.training:  # during training we always return differentiable tokens
+                if self._self_feed_with == "distribution":  # return differentiable token to self-feed
+                    embedded_token_to_return = embedded_token_to_self_feed
+                else:  # or make a new one, which is again differentiable
+                    embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
+                assert embedded_token_to_return.requires_grad
+            else:  # at inference we might return non-differentiable token as well
                 if self._infer_with == "distribution":
                     last_argmax_classes = torch.argmax(class_probabilities, 1)
                     embedded_token_to_return = torch.matmul(class_probabilities, self._target_embedder.weight)
@@ -265,7 +271,7 @@ class Rnn2RnnDifferentiableNll(Model):
 
             step_predicted_embeddings.append(embedded_token_to_return.unsqueeze(1))
 
-            # TODO 1: CRUTIAL BUG! I SHOULD NOT COMPUTE LOSS ON LOGTTS!!! IT PREVENTS BACKPROP THROUGH (GUMBEL) SOFTMAX
+            # TODO 1: CRUTIAL BUG! I SHOULD NOT COMPUTE LOSS ON LOGITS!!! IT PREVENTS BACKPROP THROUGH (GUMBEL) SOFTMAX
             # TODO 1.5: DETACH DOES NOT MAKE SENCE HERE! I COMPUTE ONLY BASED ON LOGITS!
             # TODO 2: SEPARATING TOKEN TO RETURN AND TOKEN TO SELF-FEED MIGHT BE CRUTIAL IN GAN SETUP
             # TODO 3: MAY BE ONLY RETURN LOGITS AND CLASS PROBABILITIES FOR BOTH SOFTMAX AND GUMBEL AT THE SAME TIME

@@ -84,7 +84,7 @@ class Rnn2RnnDifferentiableNll(Model):
         to get word embedding. Makes embedding non differentiable (but it is just self feeding - input to the next
         decoder timestep, output embeddings are still diffrenetiable)
         3) "argmax_distribution" = the same as "argmax_logits", but argmax is applied to the output of (Gumbel) softmax
-        4) "detach" - the same as "distribution", but allows to break computational graph to make the
+        4) "detach_distribution" - the same as "distribution", but allows to break computational graph to make the
         whole thing match the case of vanilla seq2seq.
     infer_with: string, optional (default = distribution)
         During inference we can optionally do argmax (will make output non-differentiable however).
@@ -243,7 +243,7 @@ class Rnn2RnnDifferentiableNll(Model):
             embedded_token_to_self_feed = None
             if self._self_feed_with == "distribution":
                 embedded_token_to_self_feed = torch.matmul(class_probabilities, self._target_embedder.weight)
-            elif self._self_feed_with == "detach":
+            elif self._self_feed_with == "detach_distribution":
                 embedded_token_to_self_feed = torch.matmul(class_probabilities.detach(), self._target_embedder.weight)
             elif self._infer_with == "argmax_distribution":
                 embedded_token_to_self_feed = self._target_embedder(torch.argmax(class_probabilities, 1))

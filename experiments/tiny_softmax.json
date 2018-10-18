@@ -1,3 +1,4 @@
+// this is a test config to check that the model runs
 {
     "vocabulary": {
       "max_vocab_size": 32000
@@ -14,15 +15,15 @@
 
       "scheduled_sampling_ratio": 0.5, // 0 means complete teacher forcing
 
-      "weight_function": "softmax",
+      "weight_function": "softmax", // {"softmax", "gumbel"}
 
       // has an effect only if "weight_function" is "gumbel"
       "gumbel_tau": 1,
       "gumbel_hard": true,
       "gumbel_eps": 1e-10,
 
-      "infer_with": "distribution",
-      "self_feed_with": "distribution",
+      "infer_with": "distribution", // {"distribution", "detach_distribution", "argmax_distribution", "argmax_logits"}
+      "self_feed_with": "distribution", // {"distribution", "argmax_distribution", "argmax_logits"}
 
       "source_embedder": {
         "tokens": {
@@ -49,7 +50,7 @@
     },
     "trainer": {
       "num_epochs": 500,
-      "patience": 10,
+      "patience": 4,
       "cuda_device": -1,
       "optimizer": {
         "type": "adam",

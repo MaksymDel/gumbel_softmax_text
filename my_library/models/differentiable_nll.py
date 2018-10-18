@@ -149,8 +149,18 @@ class Rnn2RnnDifferentiableNll(Model):
         self._gumbel_hard = gumbel_hard
         self._gamble_eps = gumbel_eps
 
+        if self_feed_with not in {"distribution", "argmax_logits", "argmax_distribution", "detach_distribution"}:
+            raise ValueError(
+                "Allowed vals for selffeed are {distribution, argmax_logits, argmax_distribution, detach_distribution}")
+
+        if infer_with not in {"distribution", "argmax_logits", "argmax_distribution"}:
+            raise ValueError(
+                "Allowed vals for ifer_with are {distribution, argmax_logits, argmax_distribution}")
+
         self._infer_with = infer_with
         self._self_feed_with = self_feed_with
+
+
 
     @overrides
     def forward(self,  # type: ignore
@@ -218,12 +228,12 @@ class Rnn2RnnDifferentiableNll(Model):
                 else:  # at inference time feed softmax*embedding_matrix vectors
                     embedded_next_token_to_decoder = embedded_token_to_self_feed
 
-
             # input_choices : (batch_size,)  since we are processing these one timestep at a time.
             # (batch_size, target_embedding_dim)
 
             decoder_input = self._prepare_decode_step_input(embedded_next_token_to_decoder, decoder_hidden,
                                                             encoder_outputs, source_mask)
+
             decoder_hidden, decoder_context = self._decoder_cell(decoder_input,
                                                                  (decoder_hidden, decoder_context))
             # (batch_size, num_classes)
@@ -247,7 +257,7 @@ class Rnn2RnnDifferentiableNll(Model):
                 embedded_token_to_self_feed = torch.matmul(class_probabilities, self._target_embedder.weight)
             elif self._self_feed_with == "detach_distribution":
                 embedded_token_to_self_feed = torch.matmul(class_probabilities.detach(), self._target_embedder.weight)
-            elif self._infer_with == "argmax_distribution":
+            elif self._self_feed_with == "argmax_distribution":
                 embedded_token_to_self_feed = self._target_embedder(torch.argmax(class_probabilities, 1))
             elif self._self_feed_with == "argmax_logits":
                 embedded_token_to_self_feed = self._target_embedder(torch.argmax(output_projections, 1))

@@ -1,0 +1,224 @@
+rm: cannot remove ‘models/gumbel_arglogits_argdistr_ss’: No such file or directory
+2018-10-18 12:58:31,678 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 12:58:31,681 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 12:58:31,698 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 12:58:31,707 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 12:58:34,049 - INFO - allennlp.common.params - random_seed = 13370
+2018-10-18 12:58:34,049 - INFO - allennlp.common.params - numpy_seed = 1337
+2018-10-18 12:58:34,049 - INFO - allennlp.common.params - pytorch_seed = 133
+2018-10-18 12:58:34,118 - INFO - allennlp.common.checks - Pytorch version: 0.4.1
+2018-10-18 12:58:34,169 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.dataset_readers.dataset_reader.DatasetReader'> from params {'source_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'source_words'}}, 'target_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'target_words'}}, 'type': 'simple_seq2seq'} and extras {}
+2018-10-18 12:58:34,170 - INFO - allennlp.common.params - dataset_reader.type = simple_seq2seq
+2018-10-18 12:58:34,171 - INFO - allennlp.common.from_params - instantiating class <class 'my_library.dataset_readers.simple_seq2seq_dataset_reader.SimpleSeq2SeqDatasetReader'> from params {'source_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'source_words'}}, 'target_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'target_words'}}} and extras {}
+2018-10-18 12:58:34,171 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.token_indexer.TokenIndexer from params {'lowercase_tokens': True, 'namespace': 'source_words'} and extras {}
+2018-10-18 12:58:34,171 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.type = single_id
+2018-10-18 12:58:34,172 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.single_id_token_indexer.SingleIdTokenIndexer from params {'lowercase_tokens': True, 'namespace': 'source_words'} and extras {}
+2018-10-18 12:58:34,172 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.namespace = source_words
+2018-10-18 12:58:34,172 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.lowercase_tokens = True
+2018-10-18 12:58:34,173 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.token_indexer.TokenIndexer from params {'lowercase_tokens': True, 'namespace': 'target_words'} and extras {}
+2018-10-18 12:58:34,173 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.type = single_id
+2018-10-18 12:58:34,173 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.single_id_token_indexer.SingleIdTokenIndexer from params {'lowercase_tokens': True, 'namespace': 'target_words'} and extras {}
+2018-10-18 12:58:34,173 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.namespace = target_words
+2018-10-18 12:58:34,174 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.lowercase_tokens = True
+2018-10-18 12:58:34,174 - INFO - allennlp.common.params - dataset_reader.source_add_start_token = True
+2018-10-18 12:58:34,174 - INFO - allennlp.common.params - dataset_reader.lazy = False
+2018-10-18 12:58:34,174 - INFO - allennlp.common.params - validation_dataset_reader = None
+2018-10-18 12:58:34,175 - INFO - allennlp.common.params - train_data_path = data/de-en/train.tok.do50.both
+2018-10-18 12:58:34,175 - INFO - allennlp.commands.train - Reading training data from data/de-en/train.tok.do50.both
+0it [00:00, ?it/s]2018-10-18 12:58:34,182 - INFO - my_library.dataset_readers.simple_seq2seq_dataset_reader - Reading instances from lines in file at: data/de-en/train.tok.do50.both
+559it [00:00, 3738.68it/s]1613it [00:00, 5278.59it/s]2844it [00:00, 7012.20it/s]3411it [00:00, 6345.27it/s]4353it [00:00, 6107.05it/s]5764it [00:00, 7091.50it/s]6558it [00:00, 6654.69it/s]7950it [00:01, 7323.97it/s]8853it [00:01, 6868.31it/s]10229it [00:01, 7364.04it/s]11575it [00:01, 7009.64it/s]12948it [00:01, 7393.30it/s]14299it [00:01, 7723.52it/s]15394it [00:02, 7220.85it/s]16807it [00:02, 7530.37it/s]18201it [00:02, 7805.12it/s]19618it [00:02, 8066.81it/s]20847it [00:02, 7542.91it/s]22246it [00:02, 7767.93it/s]23628it [00:02, 7972.04it/s]25011it [00:03, 8163.05it/s]26255it [00:03, 7608.34it/s]27639it [00:03, 7783.82it/s]29007it [00:03, 7945.23it/s]30384it [00:03, 8100.46it/s]31793it [00:03, 8255.92it/s]33081it [00:04, 7672.72it/s]34500it [00:04, 7820.39it/s]35819it [00:04, 7939.35it/s]37203it [00:04, 8067.25it/s]38596it [00:04, 8191.63it/s]39995it [00:04, 8312.04it/s]41403it [00:04, 8429.47it/s]42749it [00:05, 7826.38it/s]44164it [00:05, 7940.06it/s]45584it [00:05, 8050.60it/s]46976it [00:05, 8152.40it/s]48390it [00:05, 8254.01it/s]49812it [00:05, 8353.96it/s]51206it [00:06, 8445.93it/s]52589it [00:06, 8533.29it/s]53956it [00:06, 7906.66it/s]55389it [00:06, 7999.36it/s]56794it [00:07, 8085.49it/s]58171it [00:07, 8165.25it/s]59556it [00:07, 8243.93it/s]60954it [00:07, 8322.24it/s]62354it [00:07, 8398.69it/s]63735it [00:07, 8470.57it/s]65149it [00:07, 8544.92it/s]66577it [00:07, 8619.14it/s]67969it [00:08, 7980.15it/s]69380it [00:08, 8051.24it/s]70770it [00:08, 8118.31it/s]72164it [00:08, 8184.24it/s]73588it [00:08, 8252.14it/s]74985it [00:09, 8315.51it/s]76378it [00:09, 8377.04it/s]77739it [00:09, 8433.77it/s]79146it [00:09, 8494.23it/s]80555it [00:09, 8553.63it/s]81959it [00:09, 8611.25it/s]83349it [00:09, 8665.39it/s]84735it [00:09, 8718.44it/s]86119it [00:10, 8041.31it/s]87513it [00:10, 8095.86it/s]88926it [00:10, 8151.17it/s]90337it [00:11, 8205.29it/s]91721it [00:11, 8255.97it/s]93136it [00:11, 8308.52it/s]94522it [00:11, 8357.57it/s]95942it [00:11, 8408.73it/s]97344it [00:11, 8457.44it/s]98725it [00:11, 8502.89it/s]100155it [00:11, 8552.38it/s]101558it [00:11, 8598.68it/s]102962it [00:11, 8644.33it/s]104360it [00:12, 8688.24it/s]105787it [00:12, 8734.26it/s]107192it [00:13, 8074.19it/s]108526it [00:13, 8113.53it/s]109934it [00:13, 8157.76it/s]111326it [00:13, 8200.20it/s]112713it [00:13, 8241.65it/s]114103it [00:13, 8282.70it/s]115519it [00:13, 8325.03it/s]116901it [00:13, 8364.33it/s]118288it [00:14, 8403.43it/s]119668it [00:14, 8441.45it/s]121040it [00:14, 8478.34it/s]122412it [00:14, 8514.15it/s]123788it [00:14, 8550.38it/s]125189it [00:14, 8587.75it/s]126601it [00:14, 8625.43it/s]128013it [00:14, 8662.59it/s]129409it [00:14, 8696.01it/s]130790it [00:14, 8729.53it/s]132196it [00:15, 8764.87it/s]133583it [00:15, 8798.45it/s]134969it [00:16, 8130.38it/s]136321it [00:16, 8162.59it/s]137703it [00:16, 8196.26it/s]139090it [00:16, 8229.80it/s]140505it [00:17, 8264.59it/s]141861it [00:17, 8295.53it/s]143250it [00:17, 8328.03it/s]144636it [00:17, 8359.98it/s]146034it [00:17, 8392.27it/s]147446it [00:17, 8424.99it/s]148837it [00:17, 8456.14it/s]150269it [00:17, 8489.27it/s]151687it [00:17, 8521.21it/s]153095it [00:17, 8552.23it/s]153322it [00:17, 8557.05it/s]
+2018-10-18 12:58:52,093 - INFO - allennlp.common.params - validation_data_path = data/de-en/valid.tok.do50.both
+2018-10-18 12:58:52,093 - INFO - allennlp.commands.train - Reading validation data from data/de-en/valid.tok.do50.both
+0it [00:00, ?it/s]2018-10-18 12:58:52,095 - INFO - my_library.dataset_readers.simple_seq2seq_dataset_reader - Reading instances from lines in file at: data/de-en/valid.tok.do50.both
+1101it [00:00, 11005.05it/s]2461it [00:00, 12300.52it/s]3840it [00:00, 12792.83it/s]5227it [00:00, 13060.83it/s]6591it [00:00, 13176.24it/s]6973it [00:00, 13201.15it/s]
+2018-10-18 12:58:52,622 - INFO - allennlp.common.params - test_data_path = None
+2018-10-18 12:58:52,622 - INFO - allennlp.commands.train - From dataset instances, train, validation will be considered for vocabulary creation.
+2018-10-18 12:58:52,622 - INFO - allennlp.common.params - vocabulary.type = None
+2018-10-18 12:58:52,622 - INFO - allennlp.common.params - vocabulary.extend = False
+2018-10-18 12:58:52,622 - INFO - allennlp.common.params - vocabulary.directory_path = None
+2018-10-18 12:58:52,622 - INFO - allennlp.common.params - vocabulary.min_count = None
+2018-10-18 12:58:52,623 - INFO - allennlp.common.params - vocabulary.max_vocab_size = 32000
+2018-10-18 12:58:52,623 - INFO - allennlp.common.params - vocabulary.non_padded_namespaces = ('*tags', '*labels')
+2018-10-18 12:58:52,623 - INFO - allennlp.common.params - vocabulary.only_include_pretrained_words = False
+2018-10-18 12:58:52,623 - INFO - allennlp.common.params - vocabulary.tokens_to_add = None
+2018-10-18 12:58:52,623 - INFO - allennlp.data.vocabulary - Fitting token dictionary from dataset.
+0it [00:00, ?it/s]2637it [00:00, 26364.68it/s]5229it [00:00, 26141.57it/s]7813it [00:00, 26036.53it/s]10385it [00:00, 25956.82it/s]12934it [00:00, 25862.64it/s]15446it [00:00, 25738.00it/s]17972it [00:00, 25669.44it/s]20583it [00:00, 25723.54it/s]23101it [00:00, 25661.34it/s]25648it [00:01, 25641.94it/s]28206it [00:01, 25636.10it/s]30708it [00:01, 25554.58it/s]33199it [00:01, 25464.80it/s]35675it [00:01, 25368.95it/s]38133it [00:01, 25274.21it/s]40573it [00:01, 25203.81it/s]43006it [00:01, 25141.90it/s]45485it [00:01, 25122.40it/s]47928it [00:01, 25078.00it/s]50367it [00:02, 25040.27it/s]52804it [00:02, 24998.06it/s]55334it [00:02, 25010.96it/s]57827it [00:02, 25007.25it/s]60297it [00:02, 24951.33it/s]62798it [00:02, 24953.04it/s]65308it [00:02, 24958.25it/s]67815it [00:02, 24962.09it/s]70324it [00:02, 24966.61it/s]72835it [00:02, 24971.45it/s]75332it [00:03, 24969.00it/s]77832it [00:03, 24969.65it/s]80392it [00:03, 24988.93it/s]82936it [00:03, 25002.31it/s]85460it [00:03, 25004.71it/s]88003it [00:03, 25016.52it/s]90545it [00:03, 25027.45it/s]93076it [00:03, 25033.39it/s]95605it [00:03, 25031.89it/s]98125it [00:03, 25028.54it/s]100684it [00:04, 25042.43it/s]103224it [00:04, 25050.96it/s]105790it [00:04, 25065.16it/s]108331it [00:04, 25069.06it/s]110872it [00:04, 25076.57it/s]113409it [00:04, 25054.89it/s]115973it [00:04, 25067.51it/s]118503it [00:04, 25072.22it/s]121026it [00:04, 25074.92it/s]123548it [00:04, 25073.03it/s]126100it [00:05, 25081.90it/s]128634it [00:05, 25086.81it/s]131163it [00:05, 25090.18it/s]133691it [00:05, 25092.88it/s]136218it [00:05, 25094.71it/s]138743it [00:05, 25093.57it/s]141294it [00:05, 25100.88it/s]143833it [00:05, 25105.82it/s]146374it [00:05, 25110.98it/s]148910it [00:05, 25115.05it/s]151494it [00:06, 25126.99it/s]154044it [00:06, 25132.37it/s]156593it [00:06, 25131.99it/s]159147it [00:06, 25138.37it/s]160295it [00:06, 25135.46it/s]
+2018-10-18 12:58:59,364 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.models.model.Model'> from params {'source_embedder': {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}}, 'target_namespace': 'target_words', 'type': 'differentiable_nll', 'encoder': {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'}, 'attention_function': {'type': 'dot_product'}, 'max_decoding_steps': 50, 'gumbel_hard': 'true', 'scheduled_sampling_ratio': 0.5, 'gumbel_tau': '0.66', 'self_feed_with': 'argmax_distribution', 'infer_with': 'argmax_logits', 'weight_function': 'gumbel', 'gumbel_eps': '1e-10'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,364 - INFO - allennlp.common.params - model.type = differentiable_nll
+2018-10-18 12:58:59,364 - INFO - allennlp.common.from_params - instantiating class <class 'my_library.models.differentiable_nll.Rnn2RnnDifferentiableNll'> from params {'source_embedder': {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}}, 'target_namespace': 'target_words', 'encoder': {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'}, 'attention_function': {'type': 'dot_product'}, 'max_decoding_steps': 50, 'gumbel_hard': 'true', 'scheduled_sampling_ratio': 0.5, 'gumbel_tau': '0.66', 'self_feed_with': 'argmax_distribution', 'infer_with': 'argmax_logits', 'weight_function': 'gumbel', 'gumbel_eps': '1e-10'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,364 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.text_field_embedders.text_field_embedder.TextFieldEmbedder'> from params {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,364 - INFO - allennlp.common.params - model.source_embedder.type = basic
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.embedder_to_indexer_map = None
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.allow_unmatched_keys = False
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.token_embedders = None
+2018-10-18 12:58:59,365 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.token_embedders.token_embedder.TokenEmbedder'> from params {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.tokens.type = embedding
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.tokens.num_embeddings = None
+2018-10-18 12:58:59,365 - INFO - allennlp.common.params - model.source_embedder.tokens.vocab_namespace = source_words
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.embedding_dim = 300
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.pretrained_file = None
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.projection_dim = None
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.trainable = True
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.padding_index = None
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.max_norm = None
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.norm_type = 2.0
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.scale_grad_by_freq = False
+2018-10-18 12:58:59,366 - INFO - allennlp.common.params - model.source_embedder.tokens.sparse = False
+2018-10-18 12:58:59,648 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.seq2seq_encoders.seq2seq_encoder.Seq2SeqEncoder'> from params {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - model.encoder.type = lstm
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - model.encoder.batch_first = True
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - Converting Params object to dict; logging of default values will not occur when dictionary parameters are used subsequently.
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - CURRENTLY DEFINED PARAMETERS: 
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - model.encoder.bidirectional = True
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - model.encoder.hidden_size = 150
+2018-10-18 12:58:59,648 - INFO - allennlp.common.params - model.encoder.input_size = 300
+2018-10-18 12:58:59,649 - INFO - allennlp.common.params - model.encoder.num_layers = 1
+2018-10-18 12:58:59,649 - INFO - allennlp.common.params - model.encoder.batch_first = True
+2018-10-18 12:58:59,654 - INFO - allennlp.common.params - model.max_decoding_steps = 50
+2018-10-18 12:58:59,655 - INFO - allennlp.common.params - model.target_namespace = target_words
+2018-10-18 12:58:59,655 - INFO - allennlp.common.params - model.target_embedding_dim = None
+2018-10-18 12:58:59,655 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.similarity_functions.similarity_function.SimilarityFunction'> from params {'type': 'dot_product'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,655 - INFO - allennlp.common.params - model.attention_function.type = dot_product
+2018-10-18 12:58:59,655 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.similarity_functions.dot_product.DotProductSimilarity'> from params {} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x7fb7a2b22668>}
+2018-10-18 12:58:59,655 - INFO - allennlp.common.params - model.attention_function.scale_output = False
+2018-10-18 12:58:59,655 - INFO - allennlp.common.params - model.scheduled_sampling_ratio = 0.5
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.weight_function = gumbel
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.gumbel_tau = 0.66
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.gumbel_hard = true
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.gumbel_eps = 1e-10
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.infer_with = argmax_logits
+2018-10-18 12:58:59,656 - INFO - allennlp.common.params - model.self_feed_with = argmax_distribution
+2018-10-18 12:58:59,868 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.iterators.data_iterator.DataIterator'> from params {'batch_size': 100, 'type': 'basic'} and extras {}
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.type = basic
+2018-10-18 12:58:59,869 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.iterators.basic_iterator.BasicIterator'> from params {'batch_size': 100} and extras {}
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.batch_size = 100
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.instances_per_epoch = None
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.max_instances_in_memory = None
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.cache_instances = False
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.track_epoch = False
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - iterator.maximum_samples_per_batch = None
+2018-10-18 12:58:59,869 - INFO - allennlp.common.params - validation_iterator = None
+2018-10-18 12:58:59,870 - INFO - allennlp.common.params - trainer.no_grad = ()
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - Following parameters are Frozen  (without gradient):
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - Following parameters are Tunable (with gradient):
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _source_embedder.token_embedder_tokens.weight
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.weight_ih_l0
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.weight_hh_l0
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.bias_ih_l0
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.bias_hh_l0
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.weight_ih_l0_reverse
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.weight_hh_l0_reverse
+2018-10-18 12:58:59,870 - INFO - allennlp.commands.train - _encoder._module.bias_ih_l0_reverse
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _encoder._module.bias_hh_l0_reverse
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _target_embedder.weight
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _decoder_cell.weight_ih
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _decoder_cell.weight_hh
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _decoder_cell.bias_ih
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _decoder_cell.bias_hh
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _output_projection_layer.weight
+2018-10-18 12:58:59,871 - INFO - allennlp.commands.train - _output_projection_layer.bias
+2018-10-18 12:58:59,871 - INFO - allennlp.common.params - trainer.patience = 4
+2018-10-18 12:58:59,871 - INFO - allennlp.common.params - trainer.validation_metric = -loss
+2018-10-18 12:58:59,871 - INFO - allennlp.common.params - trainer.shuffle = True
+2018-10-18 12:58:59,871 - INFO - allennlp.common.params - trainer.num_epochs = 500
+2018-10-18 12:58:59,871 - INFO - allennlp.common.params - trainer.cuda_device = 0
+2018-10-18 12:58:59,872 - INFO - allennlp.common.params - trainer.grad_norm = None
+2018-10-18 12:58:59,872 - INFO - allennlp.common.params - trainer.grad_clipping = None
+2018-10-18 12:58:59,872 - INFO - allennlp.common.params - trainer.learning_rate_scheduler = None
+2018-10-18 12:59:15,681 - INFO - allennlp.common.params - trainer.optimizer.type = adam
+2018-10-18 12:59:15,682 - INFO - allennlp.common.params - trainer.optimizer.parameter_groups = None
+2018-10-18 12:59:15,682 - INFO - allennlp.training.optimizers - Number of trainable parameters: 30458602
+2018-10-18 12:59:15,682 - INFO - allennlp.common.registrable - instantiating registered subclass adam of <class 'allennlp.training.optimizers.Optimizer'>
+2018-10-18 12:59:15,682 - INFO - allennlp.common.params - Converting Params object to dict; logging of default values will not occur when dictionary parameters are used subsequently.
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - CURRENTLY DEFINED PARAMETERS: 
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - trainer.optimizer.betas = [0.9, 0.9]
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - trainer.optimizer.lr = 0.001
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - trainer.num_serialized_models_to_keep = 20
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - trainer.keep_serialized_model_every_num_seconds = None
+2018-10-18 12:59:15,683 - INFO - allennlp.common.params - trainer.model_save_interval = None
+2018-10-18 12:59:15,684 - INFO - allennlp.common.params - trainer.summary_interval = 100
+2018-10-18 12:59:15,685 - INFO - allennlp.common.params - trainer.histogram_interval = None
+2018-10-18 12:59:15,693 - INFO - allennlp.common.params - evaluate_on_test = False
+2018-10-18 12:59:15,693 - INFO - allennlp.training.trainer - Beginning training.
+2018-10-18 12:59:15,693 - INFO - allennlp.training.trainer - Epoch 0/499
+2018-10-18 12:59:15,693 - INFO - allennlp.training.trainer - Peak CPU memory usage MB: 3767.512
+2018-10-18 12:59:16,768 - INFO - allennlp.training.trainer - GPU 0 memory usage MB: 10125
+2018-10-18 12:59:16,768 - INFO - allennlp.training.trainer - GPU 1 memory usage MB: 737
+2018-10-18 12:59:16,768 - INFO - allennlp.training.trainer - GPU 2 memory usage MB: 737
+2018-10-18 12:59:16,768 - INFO - allennlp.training.trainer - GPU 3 memory usage MB: 11771
+2018-10-18 12:59:16,769 - INFO - allennlp.training.trainer - GPU 4 memory usage MB: 0
+2018-10-18 12:59:16,769 - INFO - allennlp.training.trainer - GPU 5 memory usage MB: 11767
+2018-10-18 12:59:16,769 - INFO - allennlp.training.trainer - GPU 6 memory usage MB: 11771
+2018-10-18 12:59:16,769 - INFO - allennlp.training.trainer - Training
+  0%|          | 0/1534 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/run.py", line 18, in <module>
+    main(prog="allennlp")
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/__init__.py", line 70, in main
+    args.func(args)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/train.py", line 102, in train_model_from_args
+    args.recover)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/train.py", line 132, in train_model_from_file
+    return train_model(params, serialization_dir, file_friendly_logging, recover)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/train.py", line 320, in train_model
+    metrics = trainer.train()
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/training/trainer.py", line 720, in train
+    train_metrics = self._train_epoch(epoch)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/training/trainer.py", line 486, in _train_epoch
+    loss = self._batch_loss(batch, for_training=True)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/training/trainer.py", line 420, in _batch_loss
+    output_dict = self._model(**batch)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/gpfs/hpchome/maksym95/KONSTRUKT/my_library/models/differentiable_nll.py", line 226, in forward
+    encoder_outputs, source_mask)
+  File "/gpfs/hpchome/maksym95/KONSTRUKT/my_library/models/differentiable_nll.py", line 337, in _prepare_decode_step_input
+    return torch.cat((attended_input, embedded_input), -1)
+TypeError: expected Tensor as element 1 in argument 0, but got tuple
+2018-10-18 13:00:01,171 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:01,172 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:01,196 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:01,205 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+Traceback (most recent call last):
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/run.py", line 18, in <module>
+    main(prog="allennlp")
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/__init__.py", line 70, in main
+    args.func(args)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/predict.py", line 179, in _predict
+    predictor = _get_predictor(args)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/predict.py", line 99, in _get_predictor
+    overrides=args.overrides)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/models/archival.py", line 105, in load_archive
+    resolved_archive_file = cached_path(archive_file)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/common/file_utils.py", line 92, in cached_path
+    raise FileNotFoundError("file {} not found".format(url_or_filename))
+FileNotFoundError: file models/gumbel_arglogits_argdistr_ss/model.tar.gz not found
+2018-10-18 13:00:56,871 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:56,872 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:56,905 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+2018-10-18 13:00:56,916 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
+Traceback (most recent call last):
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/run.py", line 18, in <module>
+    main(prog="allennlp")
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/__init__.py", line 70, in main
+    args.func(args)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/predict.py", line 179, in _predict
+    predictor = _get_predictor(args)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/commands/predict.py", line 99, in _get_predictor
+    overrides=args.overrides)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/models/archival.py", line 105, in load_archive
+    resolved_archive_file = cached_path(archive_file)
+  File "/gpfs/hpchome/maksym95/.conda/envs/konstrukt-cuda8/lib/python3.6/site-packages/allennlp/common/file_utils.py", line 92, in cached_path
+    raise FileNotFoundError("file {} not found".format(url_or_filename))
+FileNotFoundError: file models/gumbel_arglogits_argdistr_ss/model.tar.gz not found

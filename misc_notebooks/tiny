@@ -20,9 +20,9 @@ allennlp train --include-package my_library experiments/tiny_toy_test.json -s $F
 }"
 
 # translate dev
-#allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
-#--predictor seq2seq --output-file hyps/`basename "$0"`.dev.en.hyps --cuda-device -1 --batch-size 100
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/tiny.dev.en.hyps --cuda-device -1 --batch-size 100
 
 # translate test
-#allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/test.tok.do50.de --include-package my_library \
-#--predictor seq2seq --output-file hyps/`basename "$0"`.test.en.hyps --cuda-device -1 --batch-size 100
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/test.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/tiny.test.en.hyps --cuda-device -1 --batch-size 100

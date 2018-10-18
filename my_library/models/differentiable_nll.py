@@ -447,6 +447,11 @@ class Rnn2RnnDifferentiableNll(Model):
         """
         # shape : (batch * sequence_length, num_classes)
         probs_flat = probs.view(-1, probs.size(-1))
+
+        # sometimes probs are onehot vector, so to take log later we should smooth
+
+        probs_flat += 1e-35
+
         # shape : (batch * sequence_length, num_classes)
         log_probs_flat = probs_flat.log()
         # shape : (batch * max_len, 1)

@@ -20,9 +20,6 @@ rm -r $FOLDER_NAME \
 
 }"
 
-allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
---predictor seq2seq --output-file hyps/`basename "$0"`.dev.hyps --cuda-device 0 --batch-size 100
-
 # translate dev
 allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
 --predictor seq2seq --output-file hyps/`basename "$0"`.dev.en.hyps --cuda-device 0 --batch-size 100

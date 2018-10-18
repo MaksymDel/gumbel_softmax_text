@@ -12,3 +12,4 @@ slurm*
 *sbatch
 *.vec
 .idea
+models-old/*

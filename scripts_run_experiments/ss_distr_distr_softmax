@@ -1,0 +1,32 @@
+"sbatch_experiments_runners/slurm_specs.sbatch" # add SLURM specs
+
+FOLDER_NAME=models/`basename "$0"` # it will depend of the script name
+
+rm -r $FOLDER_NAME \
+| allennlp train --include-package my_library experiments/tiny_toy_test.json -s $FOLDER_NAME \
+-o \
+ "{"model": \
+        {"scheduled_sampling_ratio": 0.5}\
+
+        {"self_feed_with": 'distribution'}\
+        {"infer_with": 'distribution'}\
+
+        {"weight_function": 'softmax'}\
+
+        # has an effect only when weight function is 'gumbel'
+        {"gumbel_tau": '1'}\
+        {"gumbel_hard": 'true'}\
+        {"gumbel_eps": '1e-10'}\
+
+}"
+
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/`basename "$0"`.dev.hyps --cuda-device 0 --batch-size 100
+
+# translate dev
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/valid.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/`basename "$0"`.dev.en.hyps --cuda-device 0 --batch-size 100
+
+# translate test
+allennlp predict $FOLDER_NAME/model.tar.gz data/de-en/test.tok.do50.de --include-package my_library \
+--predictor seq2seq --output-file hyps/`basename "$0"`.test.en.hyps --cuda-device 0 --batch-size 100

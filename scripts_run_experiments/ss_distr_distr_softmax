@@ -1,4 +1,6 @@
-"sbatch_experiments_runners/slurm_specs.sbatch" # add SLURM specs
+#!/bin/bash
+
+source sbatch_experiments_runners/slurm_specs.sbatch # add SLURM specs
 
 FOLDER_NAME=models/`basename "$0"` # it will depend of the script name
 

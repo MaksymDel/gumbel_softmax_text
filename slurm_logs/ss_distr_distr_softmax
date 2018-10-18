@@ -1,171 +1,0 @@
-2018-10-18 11:35:22,800 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
-2018-10-18 11:35:22,804 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
-2018-10-18 11:35:22,832 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
-2018-10-18 11:35:22,843 - INFO - allennlp.common.registrable - instantiating registered subclass relu of <class 'allennlp.nn.activations.Activation'>
-2018-10-18 11:35:25,427 - INFO - allennlp.common.params - random_seed = 13370
-2018-10-18 11:35:25,430 - INFO - allennlp.common.params - numpy_seed = 1337
-2018-10-18 11:35:25,430 - INFO - allennlp.common.params - pytorch_seed = 133
-2018-10-18 11:35:25,497 - INFO - allennlp.common.checks - Pytorch version: 0.4.1
-2018-10-18 11:35:25,505 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.dataset_readers.dataset_reader.DatasetReader'> from params {'source_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'source_words'}}, 'target_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'target_words'}}, 'type': 'simple_seq2seq'} and extras {}
-2018-10-18 11:35:25,506 - INFO - allennlp.common.params - dataset_reader.type = simple_seq2seq
-2018-10-18 11:35:25,506 - INFO - allennlp.common.from_params - instantiating class <class 'my_library.dataset_readers.simple_seq2seq_dataset_reader.SimpleSeq2SeqDatasetReader'> from params {'source_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'source_words'}}, 'target_token_indexers': {'tokens': {'lowercase_tokens': True, 'namespace': 'target_words'}}} and extras {}
-2018-10-18 11:35:25,506 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.token_indexer.TokenIndexer from params {'lowercase_tokens': True, 'namespace': 'source_words'} and extras {}
-2018-10-18 11:35:25,506 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.type = single_id
-2018-10-18 11:35:25,507 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.single_id_token_indexer.SingleIdTokenIndexer from params {'lowercase_tokens': True, 'namespace': 'source_words'} and extras {}
-2018-10-18 11:35:25,507 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.namespace = source_words
-2018-10-18 11:35:25,507 - INFO - allennlp.common.params - dataset_reader.source_token_indexers.tokens.lowercase_tokens = True
-2018-10-18 11:35:25,507 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.token_indexer.TokenIndexer from params {'lowercase_tokens': True, 'namespace': 'target_words'} and extras {}
-2018-10-18 11:35:25,507 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.type = single_id
-2018-10-18 11:35:25,508 - INFO - allennlp.common.from_params - instantiating class allennlp.data.token_indexers.single_id_token_indexer.SingleIdTokenIndexer from params {'lowercase_tokens': True, 'namespace': 'target_words'} and extras {}
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.namespace = target_words
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - dataset_reader.target_token_indexers.tokens.lowercase_tokens = True
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - dataset_reader.source_add_start_token = True
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - dataset_reader.lazy = False
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - validation_dataset_reader = None
-2018-10-18 11:35:25,508 - INFO - allennlp.common.params - train_data_path = data/de-en/valid.tok.do50.both
-2018-10-18 11:35:25,508 - INFO - allennlp.commands.train - Reading training data from data/de-en/valid.tok.do50.both
-0it [00:00, ?it/s]2018-10-18 11:35:25,535 - INFO - my_library.dataset_readers.simple_seq2seq_dataset_reader - Reading instances from lines in file at: data/de-en/valid.tok.do50.both
-553it [00:00, 3339.16it/s]1581it [00:00, 4956.85it/s]2800it [00:00, 6682.89it/s]3356it [00:00, 6156.69it/s]4340it [00:00, 6118.93it/s]5711it [00:00, 7056.49it/s]6504it [00:00, 6548.47it/s]6973it [00:01, 6767.01it/s]
-2018-10-18 11:35:26,539 - INFO - allennlp.common.params - validation_data_path = data/de-en/valid.tok.do50.both
-2018-10-18 11:35:26,540 - INFO - allennlp.commands.train - Reading validation data from data/de-en/valid.tok.do50.both
-0it [00:00, ?it/s]2018-10-18 11:35:26,540 - INFO - my_library.dataset_readers.simple_seq2seq_dataset_reader - Reading instances from lines in file at: data/de-en/valid.tok.do50.both
-1375it [00:00, 13741.23it/s]1788it [00:00, 6719.86it/s] 3177it [00:00, 8677.65it/s]4518it [00:00, 7226.85it/s]5887it [00:00, 8117.14it/s]6973it [00:00, 8652.40it/s]
-2018-10-18 11:35:27,346 - INFO - allennlp.common.params - test_data_path = None
-2018-10-18 11:35:27,346 - INFO - allennlp.commands.train - From dataset instances, train, validation will be considered for vocabulary creation.
-2018-10-18 11:35:27,346 - INFO - allennlp.common.params - vocabulary.type = None
-2018-10-18 11:35:27,346 - INFO - allennlp.common.params - vocabulary.extend = False
-2018-10-18 11:35:27,346 - INFO - allennlp.common.params - vocabulary.directory_path = None
-2018-10-18 11:35:27,346 - INFO - allennlp.common.params - vocabulary.min_count = None
-2018-10-18 11:35:27,347 - INFO - allennlp.common.params - vocabulary.max_vocab_size = 32000
-2018-10-18 11:35:27,347 - INFO - allennlp.common.params - vocabulary.non_padded_namespaces = ('*tags', '*labels')
-2018-10-18 11:35:27,347 - INFO - allennlp.common.params - vocabulary.only_include_pretrained_words = False
-2018-10-18 11:35:27,347 - INFO - allennlp.common.params - vocabulary.tokens_to_add = None
-2018-10-18 11:35:27,347 - INFO - allennlp.data.vocabulary - Fitting token dictionary from dataset.
-0it [00:00, ?it/s]2621it [00:00, 26201.53it/s]5221it [00:00, 26094.42it/s]7826it [00:00, 26077.78it/s]10500it [00:00, 26242.28it/s]13141it [00:00, 26275.51it/s]13946it [00:00, 26173.92it/s]
-2018-10-18 11:35:28,016 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.models.model.Model'> from params {'target_namespace': 'target_words', 'source_embedder': {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}}, 'attention_function': {'type': 'dot_product'}, 'max_decoding_steps': 50, 'type': 'differentiable_nll', 'encoder': {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'}, 'scheduled_sampling_ratio': 0.5, 'weight_function': 'softmax', 'self_feed_with': 'distribution', 'gumbel_eps': '1e-10', 'gumbel_hard': 'true', 'infer_with': 'distribution', 'gumbel_tau': '1'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,017 - INFO - allennlp.common.params - model.type = differentiable_nll
-2018-10-18 11:35:28,017 - INFO - allennlp.common.from_params - instantiating class <class 'my_library.models.differentiable_nll.Rnn2RnnDifferentiableNll'> from params {'target_namespace': 'target_words', 'source_embedder': {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}}, 'attention_function': {'type': 'dot_product'}, 'max_decoding_steps': 50, 'encoder': {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'}, 'scheduled_sampling_ratio': 0.5, 'weight_function': 'softmax', 'self_feed_with': 'distribution', 'gumbel_eps': '1e-10', 'gumbel_hard': 'true', 'infer_with': 'distribution', 'gumbel_tau': '1'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,017 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.text_field_embedders.text_field_embedder.TextFieldEmbedder'> from params {'tokens': {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'}} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,017 - INFO - allennlp.common.params - model.source_embedder.type = basic
-2018-10-18 11:35:28,017 - INFO - allennlp.common.params - model.source_embedder.embedder_to_indexer_map = None
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.allow_unmatched_keys = False
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.token_embedders = None
-2018-10-18 11:35:28,018 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.token_embedders.token_embedder.TokenEmbedder'> from params {'embedding_dim': 300, 'trainable': True, 'type': 'embedding', 'vocab_namespace': 'source_words'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.type = embedding
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.num_embeddings = None
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.vocab_namespace = source_words
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.embedding_dim = 300
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.pretrained_file = None
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.projection_dim = None
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.trainable = True
-2018-10-18 11:35:28,018 - INFO - allennlp.common.params - model.source_embedder.tokens.padding_index = None
-2018-10-18 11:35:28,019 - INFO - allennlp.common.params - model.source_embedder.tokens.max_norm = None
-2018-10-18 11:35:28,019 - INFO - allennlp.common.params - model.source_embedder.tokens.norm_type = 2.0
-2018-10-18 11:35:28,019 - INFO - allennlp.common.params - model.source_embedder.tokens.scale_grad_by_freq = False
-2018-10-18 11:35:28,019 - INFO - allennlp.common.params - model.source_embedder.tokens.sparse = False
-2018-10-18 11:35:28,106 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.seq2seq_encoders.seq2seq_encoder.Seq2SeqEncoder'> from params {'bidirectional': True, 'hidden_size': 150, 'input_size': 300, 'num_layers': 1, 'type': 'lstm'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.type = lstm
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.batch_first = True
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - Converting Params object to dict; logging of default values will not occur when dictionary parameters are used subsequently.
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - CURRENTLY DEFINED PARAMETERS: 
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.bidirectional = True
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.hidden_size = 150
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.input_size = 300
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.num_layers = 1
-2018-10-18 11:35:28,107 - INFO - allennlp.common.params - model.encoder.batch_first = True
-2018-10-18 11:35:28,120 - INFO - allennlp.common.params - model.max_decoding_steps = 50
-2018-10-18 11:35:28,120 - INFO - allennlp.common.params - model.target_namespace = target_words
-2018-10-18 11:35:28,120 - INFO - allennlp.common.params - model.target_embedding_dim = None
-2018-10-18 11:35:28,121 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.similarity_functions.similarity_function.SimilarityFunction'> from params {'type': 'dot_product'} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.attention_function.type = dot_product
-2018-10-18 11:35:28,121 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.modules.similarity_functions.dot_product.DotProductSimilarity'> from params {} and extras {'vocab': <allennlp.data.vocabulary.Vocabulary object at 0x2adc327c90b8>}
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.attention_function.scale_output = False
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.scheduled_sampling_ratio = 0.5
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.weight_function = softmax
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.gumbel_tau = 1
-2018-10-18 11:35:28,121 - INFO - allennlp.common.params - model.gumbel_hard = true
-2018-10-18 11:35:28,122 - INFO - allennlp.common.params - model.gumbel_eps = 1e-10
-2018-10-18 11:35:28,122 - INFO - allennlp.common.params - model.infer_with = distribution
-2018-10-18 11:35:28,122 - INFO - allennlp.common.params - model.self_feed_with = distribution
-2018-10-18 11:35:28,206 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.iterators.data_iterator.DataIterator'> from params {'batch_size': 128, 'type': 'basic'} and extras {}
-2018-10-18 11:35:28,206 - INFO - allennlp.common.params - iterator.type = basic
-2018-10-18 11:35:28,207 - INFO - allennlp.common.from_params - instantiating class <class 'allennlp.data.iterators.basic_iterator.BasicIterator'> from params {'batch_size': 128} and extras {}
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.batch_size = 128
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.instances_per_epoch = None
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.max_instances_in_memory = None
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.cache_instances = False
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.track_epoch = False
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - iterator.maximum_samples_per_batch = None
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - validation_iterator = None
-2018-10-18 11:35:28,207 - INFO - allennlp.common.params - trainer.no_grad = ()
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - Following parameters are Frozen  (without gradient):
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - Following parameters are Tunable (with gradient):
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _source_embedder.token_embedder_tokens.weight
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.weight_ih_l0
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.weight_hh_l0
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.bias_ih_l0
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.bias_hh_l0
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.weight_ih_l0_reverse
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.weight_hh_l0_reverse
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.bias_ih_l0_reverse
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _encoder._module.bias_hh_l0_reverse
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _target_embedder.weight
-2018-10-18 11:35:28,208 - INFO - allennlp.commands.train - _decoder_cell.weight_ih
-2018-10-18 11:35:28,209 - INFO - allennlp.commands.train - _decoder_cell.weight_hh
-2018-10-18 11:35:28,209 - INFO - allennlp.commands.train - _decoder_cell.bias_ih
-2018-10-18 11:35:28,209 - INFO - allennlp.commands.train - _decoder_cell.bias_hh
-2018-10-18 11:35:28,209 - INFO - allennlp.commands.train - _output_projection_layer.weight
-2018-10-18 11:35:28,209 - INFO - allennlp.commands.train - _output_projection_layer.bias
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.patience = 4
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.validation_metric = -loss
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.shuffle = True
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.num_epochs = 1
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.cuda_device = 0
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.grad_norm = None
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.grad_clipping = None
-2018-10-18 11:35:28,209 - INFO - allennlp.common.params - trainer.learning_rate_scheduler = None
-2018-10-18 11:35:31,822 - INFO - allennlp.common.params - trainer.optimizer.type = adam
-2018-10-18 11:35:31,822 - INFO - allennlp.common.params - trainer.optimizer.parameter_groups = None
-2018-10-18 11:35:31,822 - INFO - allennlp.training.optimizers - Number of trainable parameters: 13416722
-2018-10-18 11:35:31,823 - INFO - allennlp.common.registrable - instantiating registered subclass adam of <class 'allennlp.training.optimizers.Optimizer'>
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - Converting Params object to dict; logging of default values will not occur when dictionary parameters are used subsequently.
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - CURRENTLY DEFINED PARAMETERS: 
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - trainer.optimizer.betas = [0.9, 0.9]
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - trainer.optimizer.lr = 0.001
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - trainer.num_serialized_models_to_keep = 20
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - trainer.keep_serialized_model_every_num_seconds = None
-2018-10-18 11:35:31,824 - INFO - allennlp.common.params - trainer.model_save_interval = None
-2018-10-18 11:35:31,825 - INFO - allennlp.common.params - trainer.summary_interval = 100
-2018-10-18 11:35:31,825 - INFO - allennlp.common.params - trainer.histogram_interval = None
-2018-10-18 11:35:31,833 - INFO - allennlp.common.params - evaluate_on_test = False
-2018-10-18 11:35:31,833 - INFO - allennlp.training.trainer - Beginning training.
-2018-10-18 11:35:31,834 - INFO - allennlp.training.trainer - Epoch 0/0
-2018-10-18 11:35:31,834 - INFO - allennlp.training.trainer - Peak CPU memory usage MB: 2025.416
-2018-10-18 11:35:34,424 - INFO - allennlp.training.trainer - GPU 0 memory usage MB: 11013
-2018-10-18 11:35:34,424 - INFO - allennlp.training.trainer - GPU 1 memory usage MB: 6409
-2018-10-18 11:35:34,424 - INFO - allennlp.training.trainer - GPU 2 memory usage MB: 671
-2018-10-18 11:35:34,424 - INFO - allennlp.training.trainer - GPU 3 memory usage MB: 0
-2018-10-18 11:35:34,425 - INFO - allennlp.training.trainer - GPU 4 memory usage MB: 12883
-2018-10-18 11:35:34,425 - INFO - allennlp.training.trainer - GPU 5 memory usage MB: 8603
-2018-10-18 11:35:34,425 - INFO - allennlp.training.trainer - GPU 6 memory usage MB: 0
-2018-10-18 11:35:34,425 - INFO - allennlp.training.trainer - GPU 7 memory usage MB: 0
-2018-10-18 11:35:34,425 - INFO - allennlp.training.trainer - Training
-  0%|          | 0/55 [00:00<?, ?it/s]loss: 9.3478 ||:   2%|1         | 1/55 [00:00<00:16,  3.30it/s]loss: 9.3385 ||:   4%|3         | 2/55 [00:00<00:12,  4.14it/s]loss: 9.3278 ||:   5%|5         | 3/55 [00:00<00:11,  4.53it/s]loss: 9.3141 ||:   7%|7         | 4/55 [00:00<00:10,  4.77it/s]loss: 9.2958 ||:   9%|9         | 5/55 [00:01<00:10,  4.92it/s]loss: 9.2695 ||:  11%|#         | 6/55 [00:01<00:09,  5.01it/s]loss: 9.2286 ||:  13%|#2        | 7/55 [00:01<00:09,  5.08it/s]loss: 9.1587 ||:  15%|#4        | 8/55 [00:01<00:09,  5.15it/s]loss: 9.0690 ||:  16%|#6        | 9/55 [00:01<00:08,  5.20it/s]loss: 8.9633 ||:  18%|#8        | 10/55 [00:01<00:08,  5.23it/s]loss: 8.8421 ||:  20%|##        | 11/55 [00:02<00:08,  5.26it/s]loss: 8.7207 ||:  22%|##1       | 12/55 [00:02<00:08,  5.30it/s]loss: 8.5924 ||:  24%|##3       | 13/55 [00:02<00:07,  5.33it/s]loss: 8.4633 ||:  25%|##5       | 14/55 [00:02<00:07,  5.33it/s]loss: 8.3412 ||:  27%|##7       | 15/55 [00:02<00:07,  5.35it/s]loss: 8.2230 ||:  29%|##9       | 16/55 [00:02<00:07,  5.37it/s]loss: 8.1193 ||:  31%|###       | 17/55 [00:03<00:07,  5.39it/s]loss: 8.0201 ||:  33%|###2      | 18/55 [00:03<00:06,  5.41it/s]loss: 7.9339 ||:  35%|###4      | 19/55 [00:03<00:06,  5.42it/s]loss: 7.8547 ||:  36%|###6      | 20/55 [00:03<00:06,  5.43it/s]loss: 7.7830 ||:  38%|###8      | 21/55 [00:03<00:06,  5.46it/s]loss: 7.7109 ||:  40%|####      | 22/55 [00:04<00:06,  5.48it/s]loss: 7.6512 ||:  42%|####1     | 23/55 [00:04<00:05,  5.49it/s]loss: 7.5987 ||:  44%|####3     | 24/55 [00:04<00:05,  5.49it/s]loss: 7.5511 ||:  45%|####5     | 25/55 [00:04<00:05,  5.51it/s]loss: 7.5073 ||:  47%|####7     | 26/55 [00:04<00:05,  5.53it/s]loss: 7.4655 ||:  49%|####9     | 27/55 [00:04<00:05,  5.54it/s]loss: 7.4263 ||:  51%|#####     | 28/55 [00:05<00:04,  5.54it/s]loss: 7.3875 ||:  53%|#####2    | 29/55 [00:05<00:04,  5.54it/s]loss: 7.3521 ||:  55%|#####4    | 30/55 [00:05<00:04,  5.54it/s]loss: 7.3185 ||:  56%|#####6    | 31/55 [00:05<00:04,  5.54it/s]loss: 7.2863 ||:  58%|#####8    | 32/55 [00:05<00:04,  5.55it/s]loss: 7.2628 ||:  60%|######    | 33/55 [00:05<00:03,  5.55it/s]loss: 7.2388 ||:  62%|######1   | 34/55 [00:06<00:03,  5.55it/s]loss: 7.2131 ||:  64%|######3   | 35/55 [00:06<00:03,  5.55it/s]loss: 7.1854 ||:  65%|######5   | 36/55 [00:06<00:03,  5.56it/s]loss: 7.1629 ||:  67%|######7   | 37/55 [00:06<00:03,  5.56it/s]loss: 7.1449 ||:  69%|######9   | 38/55 [00:06<00:03,  5.57it/s]loss: 7.1256 ||:  71%|#######   | 39/55 [00:06<00:02,  5.57it/s]loss: 7.1088 ||:  73%|#######2  | 40/55 [00:07<00:02,  5.57it/s]loss: 7.0909 ||:  75%|#######4  | 41/55 [00:07<00:02,  5.57it/s]loss: 7.0720 ||:  76%|#######6  | 42/55 [00:07<00:02,  5.58it/s]loss: 7.0546 ||:  78%|#######8  | 43/55 [00:07<00:02,  5.58it/s]loss: 7.0400 ||:  80%|########  | 44/55 [00:07<00:01,  5.58it/s]loss: 7.0249 ||:  82%|########1 | 45/55 [00:08<00:01,  5.58it/s]loss: 7.0134 ||:  84%|########3 | 46/55 [00:08<00:01,  5.58it/s]loss: 7.0007 ||:  85%|########5 | 47/55 [00:08<00:01,  5.59it/s]loss: 6.9878 ||:  87%|########7 | 48/55 [00:08<00:01,  5.59it/s]loss: 6.9762 ||:  89%|########9 | 49/55 [00:08<00:01,  5.58it/s]loss: 6.9641 ||:  91%|######### | 50/55 [00:08<00:00,  5.58it/s]loss: 6.9500 ||:  93%|#########2| 51/55 [00:09<00:00,  5.44it/s]loss: 6.9373 ||:  95%|#########4| 52/55 [00:09<00:00,  5.45it/s]loss: 6.9276 ||:  96%|#########6| 53/55 [00:09<00:00,  5.45it/s]loss: 6.9157 ||:  98%|#########8| 54/55 [00:09<00:00,  5.46it/s]loss: 6.9037 ||: 100%|##########| 55/55 [00:10<00:00,  5.49it/s]
-2018-10-18 11:35:44,446 - INFO - allennlp.training.trainer - Validating
-  0%|          | 0/55 [00:00<?, ?it/s]loss: 6.1307 ||:   2%|1         | 1/55 [00:00<00:06,  8.55it/s]loss: 6.1184 ||:   4%|3         | 2/55 [00:00<00:05,  8.85it/s]loss: 6.1312 ||:   5%|5         | 3/55 [00:00<00:05,  8.99it/s]loss: 6.1287 ||:   7%|7         | 4/55 [00:00<00:05,  9.17it/s]loss: 6.1295 ||:   9%|9         | 5/55 [00:00<00:05,  9.24it/s]loss: 6.1547 ||:  11%|#         | 6/55 [00:00<00:05,  9.30it/s]loss: 6.1360 ||:  15%|#4        | 8/55 [00:00<00:04,  9.42it/s]loss: 6.1336 ||:  16%|#6        | 9/55 [00:00<00:04,  9.44it/s]loss: 6.1346 ||:  18%|#8        | 10/55 [00:01<00:04,  9.43it/s]loss: 6.1327 ||:  20%|##        | 11/55 [00:01<00:04,  9.41it/s]loss: 6.1444 ||:  22%|##1       | 12/55 [00:01<00:04,  9.41it/s]loss: 6.1353 ||:  24%|##3       | 13/55 [00:01<00:04,  9.43it/s]loss: 6.1416 ||:  25%|##5       | 14/55 [00:01<00:04,  9.44it/s]loss: 6.1423 ||:  27%|##7       | 15/55 [00:01<00:04,  9.43it/s]loss: 6.1404 ||:  31%|###       | 17/55 [00:01<00:04,  9.46it/s]loss: 6.1394 ||:  35%|###4      | 19/55 [00:01<00:03,  9.51it/s]loss: 6.1256 ||:  38%|###8      | 21/55 [00:02<00:03,  9.54it/s]loss: 6.1223 ||:  40%|####      | 22/55 [00:02<00:03,  9.54it/s]loss: 6.1266 ||:  42%|####1     | 23/55 [00:02<00:03,  9.55it/s]loss: 6.1288 ||:  44%|####3     | 24/55 [00:02<00:03,  9.54it/s]loss: 6.1301 ||:  45%|####5     | 25/55 [00:02<00:03,  9.53it/s]loss: 6.1308 ||:  47%|####7     | 26/55 [00:02<00:03,  9.53it/s]loss: 6.1314 ||:  51%|#####     | 28/55 [00:02<00:02,  9.56it/s]loss: 6.1333 ||:  53%|#####2    | 29/55 [00:03<00:02,  9.57it/s]loss: 6.1297 ||:  55%|#####4    | 30/55 [00:03<00:02,  9.58it/s]loss: 6.1255 ||:  56%|#####6    | 31/55 [00:03<00:02,  9.58it/s]loss: 6.1254 ||:  58%|#####8    | 32/55 [00:03<00:02,  9.58it/s]loss: 6.1283 ||:  60%|######    | 33/55 [00:03<00:02,  9.57it/s]loss: 6.1261 ||:  62%|######1   | 34/55 [00:03<00:02,  9.56it/s]loss: 6.1289 ||:  64%|######3   | 35/55 [00:03<00:02,  9.56it/s]loss: 6.1293 ||:  65%|######5   | 36/55 [00:03<00:01,  9.56it/s]loss: 6.1273 ||:  67%|######7   | 37/55 [00:03<00:01,  9.55it/s]loss: 6.1283 ||:  69%|######9   | 38/55 [00:03<00:01,  9.56it/s]loss: 6.1285 ||:  71%|#######   | 39/55 [00:04<00:01,  9.55it/s]loss: 6.1263 ||:  73%|#######2  | 40/55 [00:04<00:01,  9.55it/s]loss: 6.1268 ||:  75%|#######4  | 41/55 [00:04<00:01,  9.54it/s]loss: 6.1246 ||:  76%|#######6  | 42/55 [00:04<00:01,  9.54it/s]loss: 6.1220 ||:  78%|#######8  | 43/55 [00:04<00:01,  9.54it/s]loss: 6.1250 ||:  80%|########  | 44/55 [00:04<00:01,  9.53it/s]loss: 6.1228 ||:  82%|########1 | 45/55 [00:04<00:01,  9.54it/s]loss: 6.1215 ||:  84%|########3 | 46/55 [00:04<00:00,  9.54it/s]loss: 6.1207 ||:  85%|########5 | 47/55 [00:04<00:00,  9.54it/s]loss: 6.1183 ||:  87%|########7 | 48/55 [00:05<00:00,  9.53it/s]loss: 6.1198 ||:  89%|########9 | 49/55 [00:05<00:00,  9.53it/s]loss: 6.1195 ||:  91%|######### | 50/55 [00:05<00:00,  9.52it/s]loss: 6.1185 ||:  93%|#########2| 51/55 [00:05<00:00,  9.52it/s]loss: 6.1166 ||:  95%|#########4| 52/55 [00:05<00:00,  9.52it/s]loss: 6.1174 ||:  96%|#########6| 53/55 [00:05<00:00,  9.51it/s]loss: 6.1196 ||:  98%|#########8| 54/55 [00:05<00:00,  9.51it/s]loss: 6.1221 ||: 100%|##########| 55/55 [00:05<00:00,  9.56it/s]
-2018-10-18 11:35:51,907 - INFO - allennlp.training.trainer - Best validation performance so far. Copying weights to 'models/ss_distr_distr_softmax/best.th'.
-2018-10-18 11:35:52,354 - INFO - allennlp.training.trainer -          Training |  Validation
-2018-10-18 11:35:52,355 - INFO - allennlp.training.trainer - loss |     6.904  |     6.122
-2018-10-18 11:35:52,355 - INFO - allennlp.training.trainer - Epoch duration: 00:00:20
-2018-10-18 11:35:52,356 - INFO - allennlp.models.archival - archiving weights and vocabulary to models/ss_distr_distr_softmax/model.tar.gz
-2018-10-18 11:35:55,650 - INFO - allennlp.commands.train - Loading the best epoch weights.
-2018-10-18 11:35:55,683 - INFO - allennlp.commands.train - Metrics: {
-  "training_duration": "00:00:20",
-  "training_start_epoch": 0,
-  "training_epochs": 1,
-  "training_loss": 6.903733938390558,
-  "validation_loss": 6.122135309739546,
-  "best_validation_loss": 6.122135309739546,
-  "best_epoch": 0
-}
-slurmstepd: error: *** JOB 3249348 ON falcon1 CANCELLED AT 2018-10-18T11:36:14 ***
